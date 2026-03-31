@@ -4,10 +4,13 @@ project(Matlab_Eigen_benchmark)
 set(CMAKE_CXX_STANDARD 26)
 
 find_package(Eigen3 REQUIRED)
-find_package(matio CONFIG REQUIRED)
-add_executable(Matlab_Eigen_benchmark main.cpp)
+add_executable(${PROJECT_NAME} main.cpp)
 
-target_link_libraries(Matlab_Eigen_benchmark PRIVATE
+target_link_libraries(${PROJECT_NAME} PRIVATE
         Eigen3::Eigen
-        matio::matio
+        ${ARMADILLO_LIBRARIES}
+)
+
+target_include_directories(${PROJECT_NAME} PRIVATE
+        ${ARMADILLO_INCLUDE_DIRS}
 )
