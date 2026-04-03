@@ -3,8 +3,8 @@
 #include <vector>
 #include <fstream>
 #include <fast_matrix_market/app/Eigen.hpp>
-#include <Eigen/SparseCholesky>
 #include <Eigen/CholmodSupport>
+#include <chrono>
 
 std::vector<std::string> get_matrix_files(const std::filesystem::path& directory) {
     // Check if the directory is valid
@@ -27,6 +27,9 @@ int main(const int argc, char* argv[]) {
 
     Eigen::SparseMatrix<double> A;
     for (const std::vector<std::string> files = get_matrix_files(directory); const std::string& matrix_file : files) {
+        // Start the timer to measure total resolve time
+        auto start = std::chrono::high_resolution_clock::now();
+
         std::ifstream stream(matrix_file);
         fast_matrix_market::read_matrix_market_eigen(stream, A);
         stream.close();
@@ -51,6 +54,12 @@ int main(const int argc, char* argv[]) {
         // Solve the linear system Ax = b
         Eigen::VectorXd x = solver.solve(b);
 
+        // Stop the timer
+        auto end = std::chrono::high_resolution_clock::now();
+
+        // Calculate the total eloped time
+        std::chrono::duration<double> elapsed = end - start;
+
         // Check if the solver has had success solving the system with the Cholesky decomposition of A
         if (solver.info() != Eigen::Success) {
             std::cerr << "Solving failed for: " << matrix_file << std::endl;
@@ -58,7 +67,9 @@ int main(const int argc, char* argv[]) {
         }
         // Output result or residual for verification
         double relative_error = (x - xe).norm() / xe.norm();
-        std::cout << "Matrix: " << matrix_file << " | Relative Error: " << relative_error << std::endl;
+        std::cout << "Matrix: " << matrix_file << " | Relative Error: " << relative_error
+                << " | Time to solve: "
+                << elapsed << std::endl;
     }
     return 0;
 }
