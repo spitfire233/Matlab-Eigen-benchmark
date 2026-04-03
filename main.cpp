@@ -3,9 +3,8 @@
 #include <vector>
 #include <fstream>
 #include <fast_matrix_market/app/Eigen.hpp>
-#include <Eigen/Sparse>
-#include <Eigen/src/SparseCholesky/SimplicialCholesky.h>
-
+#include <Eigen/SparseCholesky>
+#include <Eigen/CholmodSupport>
 
 std::vector<std::string> get_matrix_files(const std::filesystem::path& directory) {
     // Check if the directory is valid
@@ -37,7 +36,8 @@ int main(const int argc, char* argv[]) {
         Eigen::VectorXd b = A * xe;
 
         // Initialize the Sparse Linear Matrix solver for applying Cholesky
-        Eigen::SimplicialLLT<Eigen::SparseMatrix<double>> solver;
+        // Eigen::SimplicialLLT<Eigen::SparseMatrix<double>> solver;
+        Eigen::CholmodSimplicialLLT<Eigen::SparseMatrix<double>> solver;
 
         // Compute the Cholesky factorization
         solver.compute(A);

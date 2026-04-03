@@ -16,6 +16,8 @@ FetchContent_MakeAvailable(fast_matrix_market)
 
 find_package(Eigen3 REQUIRED)
 find_package(OpenBLAS REQUIRED)
+find_package(CHOLMOD CONFIG REQUIRED)
+find_package(SuiteSparse_config CONFIG REQUIRED)
 add_executable(${PROJECT_NAME} main.cpp)
 
 # Enable High-Level optimization and vectorization
@@ -42,6 +44,7 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
         Eigen3::Eigen
+        SuiteSparse::CHOLMOD
         fast_matrix_market::fast_matrix_market
         OpenBLAS::OpenBLAS
 )
