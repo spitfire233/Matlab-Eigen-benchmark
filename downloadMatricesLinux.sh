@@ -5,7 +5,7 @@ urls=(
 	"https://suitesparse-collection-website.herokuapp.com/mat/Janna/StocF-1465.mat"
 	"https://suitesparse-collection-website.herokuapp.com/mat/Janna/Flan_1565.mat"
 	"https://suitesparse-collection-website.herokuapp.com/mat/Rothberg/cfd2.mat"
-	"https://suitesparse-collection-website.herokuapp.com/mat/Rothberg/cfd1.mat"
+	"https://suitesparse-collection.herokuapp.com/mat/Rothberg/cfd1.mat"
 	"https://suitesparse-collection-website.herokuapp.com/mat/AMD/G3_circuit.mat"
 	"https://suitesparse-collection-website.herokuapp.com/mat/Wissgott/parabolic_fem.mat"
 	"https://suitesparse-collection-website.herokuapp.com/mat/GHS_psdef/apache2.mat"
@@ -16,23 +16,27 @@ urls=(
 # Directory to save downloads
 download_dir="./matrices"
 
-# Create directory if it doesn't exist
+# Check if directory already exists
+if [ -d "$download_dir" ]; then
+  echo "Directory '$download_dir' already exists. Skipping download."
+  exit 0
+fi
+
+# Create directory
 mkdir -p "$download_dir"
 
-# Loop through URLs and download each file
 for url in "${urls[@]}"; do
-  echo "Downloading: $url"
-  
-  # Extract filename from URL
   filename=$(basename "$url")
-  
-  # Download file
-  curl -L "$url" -o "$download_dir/$filename"
-  
-  # Alternative with wget:
-  # wget -P "$download_dir" "$url"
+  filepath="$download_dir/$filename"
 
-  echo "Saved to: $download_dir/$filename"
+  if [ -f "$filepath" ]; then
+    echo "Skipping existing file: $filename"
+    continue
+  fi
+
+  echo "Downloading: $url"
+  curl -L "$url" -o "$filepath"
+  echo "Saved to: $filepath"
 done
 
 echo "All downloads completed."
