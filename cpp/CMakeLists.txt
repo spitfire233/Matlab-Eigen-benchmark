@@ -5,6 +5,69 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
 
+set(BASE_URL "https://suitesparse-collection-website.herokuapp.com/MM")
+set(DOWNLOAD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/matrices")
+
+set(MATRICES
+        "Janna/StocF-1465"
+        "Janna/Flan_1565"
+        "Rothberg/cfd2"
+        "Rothberg/cfd1"
+        "AMD/G3_circuit"
+        "Wissgott/parabolic_fem"
+        "GHS_psdef/apache2"
+        "MaxPlanck/shallow_water1"
+        "FIDAP/ex15"
+)
+
+if(NOT EXISTS "${DOWNLOAD_DIR}")
+    file(MAKE_DIRECTORY "${DOWNLOAD_DIR}")
+endif()
+
+foreach(MAT_PATH ${MATRICES})
+    get_filename_component(MAT_NAME "${MAT_PATH}" NAME)
+
+    set(URL "${BASE_URL}/${MAT_PATH}.tar.gz")
+    set(ARCHIVE_PATH "${DOWNLOAD_DIR}/${MAT_NAME}.tar.gz")
+    set(FINAL_MTX "${DOWNLOAD_DIR}/${MAT_NAME}.mtx")
+
+    if(EXISTS "${FINAL_MTX}")
+        message(STATUS "Matrix file already exists: ${MAT_NAME}.mtx")
+    else()
+        message(STATUS "Downloading: ${URL}")
+        file(DOWNLOAD "${URL}" "${ARCHIVE_PATH}" SHOW_PROGRESS STATUS DOWNLOAD_STATUS)
+
+        list(GET DOWNLOAD_STATUS 0 STATUS_CODE)
+        if(STATUS_CODE EQUAL 0)
+            message(STATUS "Extracting ${MAT_NAME}...")
+
+            set(TEMP_EXTRACT_DIR "${DOWNLOAD_DIR}/temp_${MAT_NAME}")
+            file(ARCHIVE_EXTRACT
+                    INPUT "${ARCHIVE_PATH}"
+                    DESTINATION "${TEMP_EXTRACT_DIR}"
+            )
+
+            # Find all .mtx files
+            file(GLOB_RECURSE FOUND_MTX_LIST "${TEMP_EXTRACT_DIR}/*.mtx")
+
+            if(FOUND_MTX_LIST)
+                # CRITICAL: Get only the first file from the list
+                list(GET FOUND_MTX_LIST 0 SINGLE_MTX)
+
+                # Move the primary mtx file to the base matrices folder
+                file(RENAME "${SINGLE_MTX}" "${FINAL_MTX}")
+                message(STATUS "Saved to: ${FINAL_MTX}")
+            endif()
+
+            # Cleanup
+            file(REMOVE_RECURSE "${TEMP_EXTRACT_DIR}")
+            file(REMOVE "${ARCHIVE_PATH}")
+        else()
+            message(WARNING "Failed to download ${MAT_NAME}. Status: ${DOWNLOAD_STATUS}")
+        endif()
+    endif()
+endforeach()
+
 include(FetchContent)
 FetchContent_Declare(
         fast_matrix_market

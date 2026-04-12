@@ -67,7 +67,8 @@ int main(const int argc, char* argv[]) {
         }
         // Output result or residual for verification
         double relative_error = (x - xe).norm() / xe.norm();
-        std::cout << "Matrix: " << matrix_file << " | Relative Error: " << relative_error
+        std::cout << "Matrix: " << matrix_file << " | Dims:" << A.rows() << " x " << A.cols()
+                << " | Relative Error: " << relative_error
                 << " | Time to solve: "
                 << elapsed << std::endl;
     }
