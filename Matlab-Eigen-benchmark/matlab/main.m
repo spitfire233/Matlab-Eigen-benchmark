@@ -1,7 +1,7 @@
 clear, clc, close all;
 % Prepare to measure multiple matrices: assume files named or a list provided.
 % Here we scan the 'matrices' folder for .mat files matching pattern 'StocF-*.mat'
-files = dir(fullfile('matrices','*.mat'));
+files = dir(fullfile('../matrices','*.mat'));
 nFiles = numel(files);
 if nFiles==0
     error('No matrix files found in matrices folder with pattern *.mat');
@@ -96,3 +96,9 @@ results.relerr = relerr;
 save('solve_bench_results.mat','results');
 
 fprintf('Benchmark completed for %d matrices. Results saved to solve_bench_results.mat\n', nFiles);
+%save the images 
+% Save plots as images
+saveas(figure(1), 'time_vs_size.png');
+saveas(figure(2), 'rss_vs_size.png');
+saveas(figure(3), 'workspace_metrics_vs_size.png');
+saveas(figure(4), 'relative_error_vs_size.png');
