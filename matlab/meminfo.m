@@ -1,23 +1,12 @@
-function [processMB, workspaceMB, diffMB] = meminfo(verbose)
+function [processMB] = meminfo()
 %MEMINFO Return MATLAB process RSS and workspace variable memory in MB.
 %   [PROCESSMB, WORKSPACEMB, DIFFMB] = MEMINFO() returns values without printing.
 %   MEMINFO(true) prints a one-line summary to the command window.
 %
 %   PROCESSMB  - process resident set size (MB)
-%   WORKSPACEMB - total bytes of variables in calling workspace (MB)
-%   DIFFMB     - PROCESSMB - WORKSPACEMB (MB)
 %
 %   Works on Linux (reads /proc/self/status). On other platforms attempts to
 %   use 'memory' (Windows) or 'ps' as a fallback.
-
-if nargin < 1
-    verbose = false;
-end
-
-% Workspace usage from caller workspace
-w = evalin('caller', 'whos');
-workspaceBytes = sum([w.bytes]);
-workspaceMB = workspaceBytes / (1024^2);
 
 % Get process RSS (kB -> MB)
 processMB = NaN;
@@ -65,17 +54,6 @@ else
         catch
             % keep NaN
         end
-    end
-end
-
-diffMB = processMB - workspaceMB;
-
-if verbose
-    if isnan(processMB)
-        fprintf('Process RSS: N/A | Workspace: %.2f MB\n', workspaceMB);
-    else
-        fprintf('Process RSS: %.2f MB | Workspace: %.2f MB | Diff: %.2f MB\n', ...
-            processMB, workspaceMB, diffMB);
     end
 end
 end

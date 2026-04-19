@@ -30,15 +30,13 @@ for k = 1:nFiles
     xe = ones(n,1);
     b = A * xe;
     % memory/time before
-    [proc_before, ws_before, diff_before] = meminfo();
+    proc_before = meminfo();
     tStart = tic;
     x = A \ b;
     times(k) = toc(tStart);
-    [proc_after, ws_after, diff_after] = meminfo();
-    % record memory use (use after - before for workspace diff; also record absolute RSS)
-    mem_rss(k) = proc_after;
-    mem_ws(k) = ws_after;
-    mem_diff(k) = diff_after - diff_before;
+    proc_after = meminfo();
+
+    mem_rss(k) = proc_after-proc_before;
     relerr(k) = norm(x-xe)/norm(xe);
     % clean up before next iteration
     clear A x b xe S
@@ -69,14 +67,6 @@ ylabel('Process RSS (MB)');
 title('Process RSS vs matrix size');
 grid on;
 
-% Plot workspace size and diff vs size
-figure;
-plot(sz, mem_ws, '-o', sz, mem_diff, '-s','LineWidth',1.5);
-xlabel('Matrix size (n)');
-ylabel('Workspace / Diff (MB)');
-legend('Workspace (MB)','Workspace Diff (MB)','Location','best');
-title('Workspace memory metrics vs matrix size');
-grid on;
 
 % Plot relative error to ensure correctness
 figure;
@@ -90,8 +80,6 @@ grid on;
 results.sizes = sz;
 results.times = times;
 results.mem_rss = mem_rss;
-results.mem_ws = mem_ws;
-results.mem_diff = mem_diff;
 results.relerr = relerr;
 save('solve_bench_results.mat','results');
 
@@ -100,5 +88,4 @@ fprintf('Benchmark completed for %d matrices. Results saved to solve_bench_resul
 % Save plots as images
 saveas(figure(1), 'time_vs_size.png');
 saveas(figure(2), 'rss_vs_size.png');
-saveas(figure(3), 'workspace_metrics_vs_size.png');
 saveas(figure(4), 'relative_error_vs_size.png');
