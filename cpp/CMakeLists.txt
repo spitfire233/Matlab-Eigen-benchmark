@@ -81,7 +81,8 @@ find_package(Eigen3 REQUIRED)
 find_package(OpenBLAS REQUIRED)
 find_package(CHOLMOD CONFIG REQUIRED)
 find_package(SuiteSparse_config CONFIG REQUIRED)
-add_executable(${PROJECT_NAME} main.cpp)
+add_executable(${PROJECT_NAME} main.cpp
+        utils/utils.hpp)
 
 # Enable High-Level optimization and vectorization
 if (MSVC) # If we are using a Visual Studio C++ compiler

@@ -5,19 +5,9 @@
 #include <fast_matrix_market/app/Eigen.hpp>
 #include <Eigen/CholmodSupport>
 #include <chrono>
+#include "utils/utils.hpp"
 
-std::vector<std::string> get_matrix_files(const std::filesystem::path& directory) {
-    // Check if the directory is valid
-    if (directory.empty() || !is_directory(directory))
-        throw std::logic_error("Must specify a valid directory!");
-    std::vector<std::string> files;
-    // Recover all matrices files from the directory and all its subdirectories
-    for (const std::filesystem::directory_entry& entry: std::filesystem::directory_iterator(directory)) {
-        if (entry.is_regular_file() && entry.path().has_extension() && entry.path().extension() == ".mtx")
-            files.emplace_back(entry.path().string());
-    }
-    return files;
-}
+
 
 int main(const int argc, char* argv[]) {
     // Get the directory from command line
@@ -26,6 +16,8 @@ int main(const int argc, char* argv[]) {
     const std::filesystem::path directory = argv[1];
 
     Eigen::SparseMatrix<double> A;
+
+    benchmark_results benchmark_results;
     for (const std::vector<std::string> files = get_matrix_files(directory); const std::string& matrix_file : files) {
         // Start the timer to measure total resolve time
         auto start = std::chrono::high_resolution_clock::now();
@@ -33,6 +25,9 @@ int main(const int argc, char* argv[]) {
         std::ifstream stream(matrix_file);
         fast_matrix_market::read_matrix_market_eigen(stream, A);
         stream.close();
+
+        // Get memory allocated after reading
+        size_t mem_after_reading = get_current_setsize();
 
         // Create xe vector of ones and create vector b as b = A * xe
         Eigen::VectorXd xe = Eigen::VectorXd::Ones(A.rows());
@@ -54,23 +49,29 @@ int main(const int argc, char* argv[]) {
         // Solve the linear system Ax = b
         Eigen::VectorXd x = solver.solve(b);
 
+        // Get memory allocated after solving the system
+        size_t memory_after_solving = get_current_setsize();
+
         // Stop the timer
         auto end = std::chrono::high_resolution_clock::now();
-
-        // Calculate the total eloped time
-        std::chrono::duration<double> elapsed = end - start;
 
         // Check if the solver has had success solving the system with the Cholesky decomposition of A
         if (solver.info() != Eigen::Success) {
             std::cerr << "Solving failed for: " << matrix_file << std::endl;
             continue;
         }
-        // Output result or residual for verification
-        double relative_error = (x - xe).norm() / xe.norm();
+
+        // Calculate results for the current matrix
+        benchmark_results.relative_error = (x - xe).norm() / xe.norm(); // Relative error
+        benchmark_results.time_elapsed = end - start; // Time to solve the system
+        benchmark_results.memory_used = memory_after_solving - mem_after_reading; // Memory used (RSS size)
+
+        write_to_csv_file(benchmark_results);
+
         std::cout << "Matrix: " << matrix_file << " | Dims:" << A.rows() << " x " << A.cols()
-                << " | Relative Error: " << relative_error
-                << " | Time to solve: "
-                << elapsed << std::endl;
+                << " | Relative Error: " << benchmark_results.relative_error
+                << " | Time to solve: " << benchmark_results.time_elapsed
+                << " | Memory used: " << memory_after_solving - mem_after_reading << "B" << std::endl;
     }
     return 0;
 }
