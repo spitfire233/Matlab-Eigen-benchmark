@@ -62,16 +62,20 @@ int main(const int argc, char* argv[]) {
         }
 
         // Calculate results for the current matrix
+        benchmark_results.matrix_name = std::filesystem::path(matrix_file).stem().string(); // Get name of the matrix
+        benchmark_results.rows = A.rows(); // Matrix rows
+        benchmark_results.cols = A.cols(); // Matrix cols
         benchmark_results.relative_error = (x - xe).norm() / xe.norm(); // Relative error
         benchmark_results.time_elapsed = end - start; // Time to solve the system
-        benchmark_results.memory_used = memory_after_solving - mem_after_reading; // Memory used (RSS size)
+        benchmark_results.memory_used = (memory_after_solving - mem_after_reading) / (1024 * 1024); // Memory used (RSS size)
 
         write_to_csv_file(benchmark_results);
 
-        std::cout << "Matrix: " << matrix_file << " | Dims:" << A.rows() << " x " << A.cols()
+        std::cout << "Matrix: " << benchmark_results.matrix_name
+                << " | Dims:" << benchmark_results.rows << " x " << benchmark_results.cols
                 << " | Relative Error: " << benchmark_results.relative_error
                 << " | Time to solve: " << benchmark_results.time_elapsed
-                << " | Memory used: " << memory_after_solving - mem_after_reading << "B" << std::endl;
+                << " | Memory used: " << benchmark_results.memory_used << "MB" << std::endl;
     }
     return 0;
 }

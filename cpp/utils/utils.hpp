@@ -4,12 +4,15 @@
 #ifdef _WIN32
 #include <windows.h>
 #include <psapi.h>
-#define RESULTS_FILE "../results/Windows_benchmark"
+#define RESULTS_FILE "../results/Windows_benchmark.csv"
 #elif
-#define RESULTS_FILE "../results/Linux_benchmark"
+#define RESULTS_FILE "../results/Linux_benchmark.csv"
 #endif
 
-typedef struct _BENCHMARK_RESULTS {
+typedef struct BENCHMARK_RESULTS {
+    std::string matrix_name;
+    Eigen::Index rows;
+    Eigen::Index cols;
     std::chrono::duration<double> time_elapsed;
     double relative_error;
     size_t memory_used;
@@ -43,18 +46,32 @@ inline std::vector<std::string> get_matrix_files(const std::filesystem::path& di
     return files;
 }
 
-inline void write_to_csv_file(const benchmark_results &benchmark_results) {
-    std::fstream fstream;
+inline void write_to_csv_file(const benchmark_results &result) {
+    const std::filesystem::path file_path = RESULTS_FILE;
 
-    fstream.open(RESULTS_FILE, std::ios::out | std::ios::app);
+    // Ensure directory exists
+    std::filesystem::create_directories(file_path.parent_path());
 
-    fstream << benchmark_results.time_elapsed << ","
-            << benchmark_results.relative_error << ","
-            << benchmark_results.memory_used;
+    // Check if file already exists (to decide whether to write header)
+    const bool file_exists = std::filesystem::exists(file_path);
 
-    fstream.close();
+    std::ofstream file(file_path, std::ios::app);
+
+    if (!file.is_open()) {
+        std::cerr << "Failed to open file: " << file_path << "\n";
+        return;
+    }
+
+    // Write header only if file is new
+    if (!file_exists) {
+        file << "Name;Dimensions;Time elapsed;Relative error;Memory used\n";
+    }
+
+    // Write data
+    file << result.matrix_name << ";"
+         << result.rows << "x" << result.cols << ";"
+         << result.time_elapsed.count() << ";"
+         << result.relative_error << ";"
+         << result.memory_used << "\n";
 }
-
-
-
 #endif //MATLAB_EIGEN_BENCHMARK_MEMORY_UTILS_H
