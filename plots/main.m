@@ -19,7 +19,7 @@ if ~exist(cmp_dir, 'dir'), mkdir(cmp_dir); end
 
 % ---- Time ----
 f1 = figure;
-plot(results.sizes, results.times, '-o', 'LineWidth', 1.5);
+semilogy(results.sizes, results.times, '-o', 'LineWidth', 1.5);
 xlabel('Matrix size (n)');
 ylabel('Solve time (s)');
 title('MATLAB: Time vs size');
@@ -28,7 +28,7 @@ saveas(f1, fullfile(mat_dir, 'time_vs_size.png'));
 
 % ---- Memory ----
 f2 = figure;
-plot(results.sizes, results.mem_rss, '-o', 'LineWidth', 1.5);
+semilogy(results.sizes, results.mem_rss, '-o', 'LineWidth', 1.5);
 xlabel('Matrix size (n)');
 ylabel('Memory RSS (MB)');
 title('MATLAB: Memory vs size');
@@ -55,7 +55,7 @@ S = CSVToStruct('../cpp/results/Windows_benchmark.csv');
 
 % ---- Time ----
 f4 = figure;
-plot(S.sizes, S.times, '-s', 'LineWidth', 1.5);
+semilogy(S.sizes, S.times, '-s', 'LineWidth', 1.5);
 xlabel('Matrix size (n)');
 ylabel('Solve time (s)');
 title('C++: Time vs size');
@@ -64,7 +64,7 @@ saveas(f4, fullfile(cpp_dir, 'time_vs_size.png'));
 
 % ---- Memory ----
 f5 = figure;
-plot(S.sizes, S.mem_rss, '-s', 'LineWidth', 1.5);
+semilogy(S.sizes, S.mem_rss, '-s', 'LineWidth', 1.5);
 xlabel('Matrix size (n)');
 ylabel('Memory RSS (MB)');
 title('C++: Memory vs size');
@@ -86,7 +86,7 @@ saveas(f6, fullfile(cpp_dir, 'relative_error_vs_size.png'));
 
 % ---- TIME COMPARISON ----
 f7 = figure;
-plot(results.sizes, results.times, '-o', 'LineWidth', 1.5);
+semilogy(results.sizes, results.times, '-o', 'LineWidth', 1.5);
 hold on
 plot(S.sizes, S.times, '-s', 'LineWidth', 1.5);
 hold off
@@ -99,9 +99,9 @@ saveas(f7, fullfile(cmp_dir, 'time_comparison.png'));
 
 % ---- MEMORY COMPARISON ----
 f8 = figure;
-plot(results.sizes, results.mem_rss, '-o', 'LineWidth', 1.5);
+semilogy(results.sizes, results.mem_rss, '-o', 'LineWidth', 1.5);
 hold on
-plot(S.sizes, S.mem_rss, '-s', 'LineWidth', 1.5);
+semilogy(S.sizes, S.mem_rss, '-s', 'LineWidth', 1.5);
 hold off
 xlabel('Matrix size (n)');
 ylabel('Memory RSS (MB)');
