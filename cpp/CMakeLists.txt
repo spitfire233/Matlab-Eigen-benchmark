@@ -104,6 +104,7 @@ endif ()
 target_compile_definitions(${PROJECT_NAME} PRIVATE
         EIGEN_NO_DEBUG
         EIGEN_USE_BLAS
+        EIGEN_USE_LAPACKE
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
