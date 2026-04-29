@@ -32,9 +32,12 @@ for k = 1:nFiles
     
     relerr(k) = solveSystem(A,n); %solve system
     profile off
+    %sum workspace memory
+    s = whos;
+    workspace = sum([s.bytes])/1024^2;
     stats = profile('info');
     sizes(k) = n;
-    mem_rss(k) = stats.FunctionTable(2).TotalMemAllocated/(1024^2);
+    mem_rss(k) = stats.FunctionTable(2).TotalMemAllocated/(1024^2)+workspace;
     times(k) = stats.FunctionTable(2).TotalTime;
     clear A x b xe S;
 
