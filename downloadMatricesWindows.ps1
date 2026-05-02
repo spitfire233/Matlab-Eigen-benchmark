@@ -36,15 +36,6 @@ $urls = @(
     "https://suitesparse-collection-website.herokuapp.com/mat/FIDAP/ex15.mat"
 )
 
-# Directory to save downloads
-$downloadDir = ".\matrices"
-
-# If directory already exists → skip everything
-if (Test-Path $downloadDir) {
-    Write-Host "Directory '$downloadDir' already exists. Skipping download."
-    exit
-}
-
 # Create directory
 New-Item -ItemType Directory -Path $downloadDir | Out-Null
 

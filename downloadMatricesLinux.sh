@@ -16,12 +16,6 @@ urls=(
 # Directory to save downloads
 download_dir="./matrices"
 
-# Check if directory already exists
-if [ -d "$download_dir" ]; then
-  echo "Directory '$download_dir' already exists. Skipping download."
-  exit 0
-fi
-
 # Create directory
 mkdir -p "$download_dir"
 
