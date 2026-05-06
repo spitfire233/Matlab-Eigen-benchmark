@@ -41,7 +41,7 @@ for k = 1:length(files)
 
     % read memory
     data = readmatrix(outfile);
-    mem_kb = data(:,2);
+    mem_kb = data(:,1);
     peak_MB = max(mem_kb) / 1024;
 
     fprintf('n = %d | time = %.3f s | mem = %.2f MB | err = %.2e\n', ...
