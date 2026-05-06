@@ -1,7 +1,6 @@
 clear; clc; close all;
 
 pid = feature('getpid');
-outfile = 'mem.txt';
 
 folder = '../matrices';
 files = dir(fullfile(folder, '*.mat'));
@@ -13,7 +12,15 @@ for k = 1:length(files)
     file = fullfile(folder, files(k).name);
     fprintf('\nProcessing: %s\n', file);
 
-    % clean old memory log
+     % ✅ unique file per iteration (works on both OS)
+    outfile = sprintf('mem_%d.txt', k);
+
+    % ✅ stop previous samplers (important on Windows)
+    if ispc
+        system('taskkill /F /IM powershell.exe >nul 2>&1');
+    end
+
+    % ✅ delete old file safely
     if isfile(outfile)
         delete(outfile);
     end
@@ -27,13 +34,18 @@ for k = 1:length(files)
 
     % start memory sampler
     if (ispc)
-        system(sprintf( ...
-        'powershell -ExecutionPolicy Bypass -File mem_sampler.ps1 %d %s &', ...
-        pid, outfile));
+        system('taskkill /F /IM powershell.exe >nul 2>&1');
+        outfile = sprintf('mem_%d.txt', k);
+        cmd = sprintf([ ...
+        'powershell -WindowStyle Hidden -Command ' ...
+        '"Start-Process powershell -ArgumentList ''-ExecutionPolicy Bypass -File mem_sampler.ps1 %d %s'' -WindowStyle Hidden"' ...
+        ], pid, outfile);
+
+        system(cmd);
     else
         system(sprintf('./mem_sampler.sh %d %s &', pid, outfile));
-        pause(0.2);
     end
+    pause(0.2);
 
     % computation
     tic
@@ -61,8 +73,9 @@ for k = 1:length(files)
     result.relerr = relerr;
 
     results = [results; result]; %#ok<AGROW>
-
+    
     clear A x b xe
+    
 end
 
 % ✅ sort results by matrix size

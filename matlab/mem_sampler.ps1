@@ -1,5 +1,5 @@
 param(
-    [int]$pid,
+    [int]$targetPid,
     [string]$outfile
 )
 
@@ -7,7 +7,7 @@ param(
 
 while (Get-Process -Id $pid -ErrorAction SilentlyContinue) {
 
-    $p = Get-Process -Id $pid
+    $p = Get-Process -Id $targetPid
 
     # WorkingSet64 = bytes
     $memKB = [math]::Round($p.WorkingSet64 / 1KB)
