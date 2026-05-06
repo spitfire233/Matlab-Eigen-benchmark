@@ -26,8 +26,14 @@ for k = 1:length(files)
     n = size(A,1);
 
     % start memory sampler
-    system(sprintf('./mem_sampler.sh %d %s &', pid, outfile));
-    pause(0.2);
+    if (ispc)
+        system(sprintf( ...
+        'powershell -ExecutionPolicy Bypass -File mem_sampler.ps1 %d %s &', ...
+        pid, outfile));
+    else
+        system(sprintf('./mem_sampler.sh %d %s &', pid, outfile));
+        pause(0.2);
+    end
 
     % computation
     tic
