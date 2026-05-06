@@ -1,59 +1,69 @@
 clear; clc; close all;
 
-% Scan the 'matrices' folder for .mat files
-files = dir(fullfile('../matrices', '*.mat'));
-nFiles = numel(files);
+pid = feature('getpid');
+outfile = 'mem.txt';
 
-if nFiles == 0
-    error('No matrix files found in matrices folder with pattern *.mat');
-end
+folder = '../matrices';
+files = dir(fullfile(folder, '*.mat'));
 
-% Pre-allocate result arrays
-sizes    = zeros(nFiles, 1);
-times    = zeros(nFiles, 1);
-mem_rss  = zeros(nFiles, 1);
-relerr   = zeros(nFiles, 1);
+results = [];   % struct array
 
-for k = 1:nFiles
-    fname = fullfile(files(k).folder, files(k).name);
-    S = load(fname);
-    % Extract matrix A
-    if isfield(S, 'Problem') && isfield(S.Problem, 'A')
-        A = S.Problem.A;
-    elseif isfield(S, 'A')
-        A = S.A;
-    else
-        error('File %s does not contain A or Problem.A', files(k).name);
+for k = 1:length(files)
+
+    file = fullfile(folder, files(k).name);
+    fprintf('\nProcessing: %s\n', file);
+
+    % clean old memory log
+    if isfile(outfile)
+        delete(outfile);
     end
-    profile clear % clear profiler
-    profile on -memory
-    % Build system
-    n = size(A, 1);
-    
-    relerr(k) = solveSystem(A,n); %solve system
-    profile off
-    %sum workspace memory
-    s = whos;
-    workspace = sum([s.bytes])/1024^2;
-    stats = profile('info');
-    sizes(k) = n;
-    mem_rss(k) = stats.FunctionTable(2).TotalMemAllocated/(1024^2)+workspace;
-    times(k) = stats.FunctionTable(2).TotalTime;
-    clear A x b xe S;
 
+    % load matrix
+    S = load(file);
+    A = S.Problem.A;
+    clear S
+
+    n = size(A,1);
+
+    % start memory sampler
+    system(sprintf('./mem_sampler.sh %d %s &', pid, outfile));
+    pause(0.2);
+
+    % computation
+    tic
+    xe = ones(n,1);
+    b = A * xe;
+    x = A \ b;
+    relerr = norm(x - xe) / norm(xe);
+    solve_time = toc;
+
+    pause(0.2); % allow sampler to finish
+
+    % read memory
+    data = readmatrix(outfile);
+    mem_kb = data(:,2);
+    peak_MB = max(mem_kb) / 1024;
+
+    fprintf('n = %d | time = %.3f s | mem = %.2f MB | err = %.2e\n', ...
+        n, solve_time, peak_MB, relerr);
+
+    % store result
+    result.file = files(k).name;
+    result.n = n;
+    result.time = solve_time;
+    result.peak_MB = peak_MB;
+    result.relerr = relerr;
+
+    results = [results; result]; %#ok<AGROW>
+
+    clear A x b xe
 end
 
-% Sort results by matrix size
-[sz, idx] = sort(sizes);
-times    = times(idx);
-mem_rss  = mem_rss(idx);
-relerr   = relerr(idx);
+% ✅ sort results by matrix size
+[~, idx] = sort([results.n]);
+results = results(idx);
 
-% Save results
-results.sizes   = sz;
-results.times   = times;
-results.mem_rss = mem_rss;
-results.relerr  = relerr;
-save(strcat('solve_bench_results.mat'), 'results');
+% ✅ save everything
+save('results.mat', 'results');
 
-fprintf('Benchmark completed for %d matrices. Results saved to solve_bench_results.mat\n', nFiles);
+fprintf('\nAll results saved to results.mat\n');
