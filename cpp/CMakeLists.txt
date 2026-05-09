@@ -82,7 +82,7 @@ find_package(BLAS)
 find_package(OpenBLAS REQUIRED)
 find_package(OpenMP REQUIRED)
 find_package(SuiteSparse CONFIG REQUIRED)
-add_executable(${PROJECT_NAME} windows.cpp utils/utils.hpp)
+add_executable(${PROJECT_NAME} "main.cpp" utils/utils.hpp)
 
 # Enable High-Level optimization and vectorization
 if (MSVC) # If we are using a Visual Studio C++ compiler
