@@ -566,3 +566,6 @@ FodyWeavers.xsd
 
 matrices/
 matlab/*.txt
+
+profilers/mem.txt
+profilers/mem_*.txt
