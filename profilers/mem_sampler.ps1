@@ -3,7 +3,7 @@ param(
     [string]$outfile
 )
 
-"mem_kb" | Out-File $outfile
+"mem_kb" | Out-File $outfile -Encoding ascii
 
 while (Get-Process -Id $pid -ErrorAction SilentlyContinue) {
 
@@ -12,7 +12,7 @@ while (Get-Process -Id $pid -ErrorAction SilentlyContinue) {
     # WorkingSet64 = bytes
     $memKB = [math]::Round($p.WorkingSet64 / 1KB)
 
-    "$memKB" | Out-File $outfile -Append
+    "$memKB" | Out-File $outfile -Append -Encoding ascii
 
     Start-Sleep -Milliseconds 50
 }
