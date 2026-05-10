@@ -13,14 +13,6 @@
 
 #include "mem_utils.hpp"
 
-#define MATRICES_FOLDER "../../../matrices"
-
-#if defined(_WIN32)
-#define RESULTS_FILE "../results/Windows_benchmark.csv"
-#else
-#define RESULTS_FILE "../results/Linux_benchmark.csv"
-#endif
-
 // Data structure to hold the benchmark results
 typedef struct BENCHMARK_RESULTS {
     std::string matrix_name; // The name of the matrix
@@ -82,12 +74,14 @@ inline void write_to_csv_file(const benchmark_results& result) {
         file << "Name;Order;Time elapsed;Relative error;Memory used\n";
     }
 
+    file << std::fixed << std::setprecision(25);
+
     // Write data
     file << result.matrix_name << ";"
         << result.order << ";"
         << result.time_elapsed.count() << ";"
         << result.relative_error << ";"
-        << result.memory_used;
+        << result.memory_used << std::endl;
 }
 
 // Function to calculate the benchmark results for a matrix in .mtx format
@@ -130,7 +124,6 @@ inline benchmark_results calulate_benchmark(const std::string& matrix_file) {
 
     // Solve the linear system Ax = b
     Eigen::VectorXd x = solver.solve(b);
-    benchmark_results.memory_used = get_process_RSS() / (1024 * 1024);
 
     // Stop the timer
     auto end = std::chrono::high_resolution_clock::now();
@@ -146,7 +139,7 @@ inline benchmark_results calulate_benchmark(const std::string& matrix_file) {
     benchmark_results.order = A.rows(); // Matrix order as the number of rows
     benchmark_results.relative_error = (x - xe).norm() / xe.norm(); // Relative error
     benchmark_results.time_elapsed = end - start; // Time to solve the system
-     // Process memory usage
+    
     return benchmark_results;
 }
 
