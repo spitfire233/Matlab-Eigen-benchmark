@@ -3,7 +3,7 @@ clear; clc; close all;
 %% =========================
 % LOAD MATLAB RESULTS
 %% =========================
-load('../matlab/solve_bench_results.mat');
+results = load('../matlab/results.mat');
 
 mat_dir = 'matlab/windows';
 cpp_dir = 'cpp/windows';
@@ -19,7 +19,7 @@ if ~exist(cmp_dir, 'dir'), mkdir(cmp_dir); end
 
 % ---- Time ----
 f1 = figure;
-semilogy(results.sizes, results.times, '-o', 'LineWidth', 1.5);
+semilogy(results.n, results.time, '-o', 'LineWidth', 1.5);
 xlabel('Matrix size (n)');
 ylabel('Solve time (s)');
 title('MATLAB: Time vs size');
@@ -28,7 +28,7 @@ saveas(f1, fullfile(mat_dir, 'time_vs_size.png'));
 
 % ---- Memory ----
 f2 = figure;
-semilogy(results.sizes, results.mem_rss, '-o', 'LineWidth', 1.5);
+semilogy(results.n, results.peak_MB, '-o', 'LineWidth', 1.5);
 xlabel('Matrix size (n)');
 ylabel('Memory RSS (MB)');
 title('MATLAB: Memory vs size');
@@ -37,7 +37,7 @@ saveas(f2, fullfile(mat_dir, 'rss_vs_size.png'));
 
 % ---- Error ----
 f3 = figure;
-semilogy(results.sizes, results.relerr, '-o', 'LineWidth', 1.5);
+semilogy(results.n, results.relerr, '-o', 'LineWidth', 1.5);
 xlabel('Matrix size (n)');
 ylabel('Relative error');
 title('MATLAB: Relative error vs size');
@@ -47,7 +47,7 @@ saveas(f3, fullfile(mat_dir, 'relative_error_vs_size.png'));
 %% =========================
 % LOAD C++ RESULTS
 %% =========================
-S = CSVToStruct('../cpp/results/Windows_benchmark.csv');
+S = CSVToStruct('../cpp/out/build/results/Windows_benchmark.csv');
 
 %% =========================
 % C++ PLOTS
@@ -86,7 +86,7 @@ saveas(f6, fullfile(cpp_dir, 'relative_error_vs_size.png'));
 
 % ---- TIME COMPARISON ----
 f7 = figure;
-semilogy(results.sizes, results.times, '-o', 'LineWidth', 1.5);
+semilogy(results.n, results.time, '-o', 'LineWidth', 1.5);
 hold on
 plot(S.sizes, S.times, '-s', 'LineWidth', 1.5);
 hold off
@@ -99,7 +99,7 @@ saveas(f7, fullfile(cmp_dir, 'time_comparison.png'));
 
 % ---- MEMORY COMPARISON ----
 f8 = figure;
-semilogy(results.sizes, results.mem_rss, '-o', 'LineWidth', 1.5);
+semilogy(results.n, results.peak_MB, '-o', 'LineWidth', 1.5);
 hold on
 semilogy(S.sizes, S.mem_rss, '-s', 'LineWidth', 1.5);
 hold off
@@ -112,7 +112,7 @@ saveas(f8, fullfile(cmp_dir, 'memory_comparison.png'));
 
 % ---- ERROR COMPARISON ----
 f9 = figure;
-semilogy(results.sizes, results.relerr, '-o', 'LineWidth', 1.5);
+semilogy(results.n, results.relerr, '-o', 'LineWidth', 1.5);
 hold on
 semilogy(S.sizes, S.relerr, '-s', 'LineWidth', 1.5);
 hold off

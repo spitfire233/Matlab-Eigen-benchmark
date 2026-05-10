@@ -16,32 +16,16 @@ function S = csvToStruct(filename)
     end
 
     fields = fieldnames(S);
-    col1 = S.(fields{1});
-
-    % Ensure col1 is a string array
-    if iscell(col1)
-        col1 = string(col1);
-    end
-
-    % Convert "NxN" -> N
-    n = zeros(numel(col1), 1);
-    for i = 1:numel(col1)
-        parts = strsplit(col1(i), 'x');
-        n(i) = str2double(parts{1});
-    end
-
-    % Overwrite first field with numeric values
-    S.(fields{1}) = n;
 
     % FIX 1: Sort by `n`, not by the original table column (which is still a string)
-    [~, idx] = sort(n);
+    [~, idx] = sort(S.(fields{1}));
     for i = 1:numel(fields)
         col = S.(fields{i});
         S.(fields{i}) = col(idx);
     end
 
     % FIX 2: Rename fields safely, checking existence before renaming
-    oldFields = {'Dimensions', 'TimeElapsed', 'RelativeError', 'MemoryUsed'};
+    oldFields = {'Order', 'Time elapsed', 'Relative error', 'Memory used'};
     newFields = {'sizes', 'times', 'relerr', 'mem_rss'};
     for i = 1:length(oldFields)
         old = matlab.lang.makeValidName(oldFields{i});

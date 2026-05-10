@@ -7,20 +7,28 @@ files = dir(fullfile(folder, '*.mat'));
 
 results = [];   % struct array
 
+N = length(files);
+
+% Preallocate
+n_vals     = zeros(N,1);
+time_vals  = zeros(N,1);
+mem_vals   = zeros(N,1);
+err_vals   = zeros(N,1);
+
 for k = 1:length(files)
 
     file = fullfile(folder, files(k).name);
     fprintf('\nProcessing: %s\n', file);
 
-     % ✅ unique file per iteration (works on both OS)
+     % Unique file per iteration (works on both OS)
     outfile = sprintf('mem_%d.txt', k);
 
-    % ✅ stop previous samplers (important on Windows)
+    % Stop previous samplers (important on Windows)
     if ispc
         system('taskkill /F /IM powershell.exe >nul 2>&1');
     end
 
-    % ✅ delete old file safely
+    % Delete old file safely
     if isfile(outfile)
         delete(outfile);
     end
@@ -38,12 +46,12 @@ for k = 1:length(files)
         outfile = sprintf('mem_%d.txt', k);
         cmd = sprintf([ ...
         'powershell -WindowStyle Hidden -Command ' ...
-        '"Start-Process powershell -ArgumentList ''-ExecutionPolicy Bypass -File mem_sampler.ps1 %d %s'' -WindowStyle Hidden"' ...
+        '"Start-Process powershell -ArgumentList ''-ExecutionPolicy Bypass -File ../profilers/mem_sampler.ps1 %d %s'' -WindowStyle Hidden"' ...
         ], pid, outfile);
 
         system(cmd);
     else
-        system(sprintf('./mem_sampler.sh %d %s &', pid, outfile));
+        system(sprintf('../profilers/mem_sampler.sh %d %s &', pid, outfile));
     end
     pause(0.2);
 
@@ -65,24 +73,33 @@ for k = 1:length(files)
     fprintf('n = %d | time = %.3f s | mem = %.2f MB | err = %.2e\n', ...
         n, solve_time, peak_MB, relerr);
 
-    % store result
-    result.file = files(k).name;
-    result.n = n;
-    result.time = solve_time;
-    result.peak_MB = peak_MB;
-    result.relerr = relerr;
-
-    results = [results; result]; %#ok<AGROW>
+    % ---- store ----
+    n_vals(k)     = n;
+    time_vals(k)  = solve_time;
+    mem_vals(k)   = peak_MB;
+    err_vals(k)   = relerr;
     
     clear A x b xe
     
 end
 
-% ✅ sort results by matrix size
-[~, idx] = sort([results.n]);
-results = results(idx);
+if ispc
+    system('taskkill /F /IM powershell.exe >nul 2>&1');
+end
 
-% ✅ save everything
-save('results.mat', 'results');
+% Sort by matrix size
+[~, idx] = sort(n_vals);
+
+n     = n_vals(idx);
+time  = time_vals(idx);
+peak_MB   = mem_vals(idx);
+relerr   = err_vals(idx);
+
+% Save
+save('results.mat', ...
+    'n', ...
+    'time', ...
+    'peak_MB', ...
+    'relerr');
 
 fprintf('\nAll results saved to results.mat\n');
