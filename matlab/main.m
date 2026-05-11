@@ -37,7 +37,15 @@ for k = 1:length(files)
     S = load(file);
     A = S.Problem.A;
     clear S
-
+    if ispc
+        cmd = sprintf('powershell -Command "(Get-Process -Id %d).WorkingSet64"', pid);
+        [~, mem_str] = system(cmd);
+        init_mem = str2double(strtrim(mem_str)) / 1024^2;
+    else
+        cmd = sprintf('ps -p %d -o rss=', pid);
+        [~, mem_str] = system(cmd);
+        init_mem = str2double(strtrim(mem_str)) / 1024;
+    end
     n = size(A,1);
 
     % start memory sampler
@@ -70,15 +78,17 @@ for k = 1:length(files)
     mem_kb = data(:,1);
     peak_MB = max(mem_kb) / 1024;
 
-    fprintf('n = %d | time = %.3f s | mem = %.2f MB | err = %.2e\n', ...
-        n, solve_time, peak_MB, relerr);
+    
 
     % ---- store ----
     n_vals(k)     = n;
     time_vals(k)  = solve_time;
-    mem_vals(k)   = peak_MB;
+    mem_vals(k)   = peak_MB-init_mem;
     err_vals(k)   = relerr;
-    
+
+    fprintf('n = %d | time = %.3f s | mem = %.2f MB | err = %.2e\n', ...
+        n_vals(k), time_vals(k), mem_vals(k),  err_vals(k));
+
     clear A x b xe
     
 end
