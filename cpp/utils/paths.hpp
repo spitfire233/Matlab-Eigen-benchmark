@@ -12,7 +12,7 @@ inline const std::filesystem::path MATRICES_PATH = MATRICES_DIR; // Matrices dir
 
 #ifdef _WIN32
 inline const std::filesystem::path PROFILER_SCRIPT_PATH = PROFILER_PATH / "mem_sampler.ps1"; // Windows profiler script
-inline const std::filesystem::path RESULTS_FILE = ROOT_DIR / "results" / "windows_resulsts.csv"; // Windows results CSV
+inline const std::filesystem::path RESULTS_FILE = ROOT_DIR / "results" / "windows_results.csv"; // Windows results CSV
 #else
 inline const std::filesystem::path PROFILER_SCRIPT_PATH = PROFILER_PATH / "mem_sampler.sh"; // Linux/macOS profiler script
 inline const std::filesystem::path RESULTS_FILE = ROOT_DIR / "results" / "linux_resulsts.csv"; // Linux results CSV

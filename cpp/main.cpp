@@ -10,9 +10,7 @@ int main(const int argc, char* argv[]) {
     for (const std::vector<std::string> files = get_matrix_files(MATRICES_DIR); const std::string & matrix_file : files) {
 
         // Kill still running profiler, if any
-        #if defined(_WIN32)
-            system("taskkill /F /IM powershell.exe >nul 2>&1");
-        #endif
+        stop_sampler();
 
         // Remove previous memory file, if any
         if (std::filesystem::exists(mem_file)) {
@@ -22,11 +20,8 @@ int main(const int argc, char* argv[]) {
         // Start the memory profiler in anothe process
         start_sampler(pid, mem_file);
 
-        // Pause the thread in order to wait for the profiler to start
-        std::this_thread::sleep_for(std::chrono::milliseconds(200));
-
         // Calculate the matrix benchmark resulsts
-        benchmark_results results = calulate_benchmark(matrix_file);
+        benchmark_results results = calulate_benchmark(matrix_file, pid, mem_file);
 
         // Pause the thread in order to allow the profiler to finish writing
         std::this_thread::sleep_for(std::chrono::milliseconds(200));

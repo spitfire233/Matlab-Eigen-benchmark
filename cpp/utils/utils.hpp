@@ -19,7 +19,7 @@ typedef struct BENCHMARK_RESULTS {
     Eigen::Index order{}; // The order of the square matrix
     std::chrono::duration<double> time_elapsed{}; // The total time elapsed to perform the calculation
     double relative_error = 0.0; // The relative error of the calculation 
-    size_t memory_used = 0; // The memory used by the whole process for the calculation
+    double memory_used = 0.0; // The memory used by the whole process for the calculation
 } benchmark_results;
 
 // Output operator override to print the benchmark_results structure
@@ -85,26 +85,33 @@ inline void write_to_csv_file(const benchmark_results& result) {
 }
 
 // Function to calculate the benchmark results for a matrix in .mtx format
-inline benchmark_results calulate_benchmark(const std::string& matrix_file) {
-
+inline benchmark_results calulate_benchmark(const std::string& matrix_file, const int pid, const std::string mem_file) {
+    
+    // Prepare struct to hold results
     benchmark_results benchmark_results;
 
     // Create the matrix as a SparseMatrix
     Eigen::SparseMatrix<double> A;
+
+    // Start the memory profiler
+    start_sampler(pid, mem_file);
 
     // Start the timer to measure total resolve time
     auto start = std::chrono::high_resolution_clock::now();
 
     // Create file input (reading) stream (ifstream)
     std::ifstream stream(matrix_file);
-    
+
     // Reade the matrix contained in the .mtx file into A
     fast_matrix_market::read_matrix_market_eigen(stream, A);
 
     // Close the stream
     stream.close();
 
-    // Create xe vector of ones and 
+    // Get current resident set size after reading the matrix
+    const double mem_after_reading = get_current_rss_mb();
+
+    // Create xe vector of ones
     Eigen::VectorXd xe = Eigen::VectorXd::Ones(A.rows());
 
     // Create vector b as b = A * xe
@@ -128,6 +135,9 @@ inline benchmark_results calulate_benchmark(const std::string& matrix_file) {
     // Stop the timer
     auto end = std::chrono::high_resolution_clock::now();
 
+    // Stop the sampler
+    stop_sampler();
+
     // Check if the solver has had success solving the system with the Cholesky decomposition of A
     if (solver.info() != Eigen::Success) {
         std::cerr << "Solving failed for: " << matrix_file << std::endl;
@@ -139,7 +149,7 @@ inline benchmark_results calulate_benchmark(const std::string& matrix_file) {
     benchmark_results.order = A.rows(); // Matrix order as the number of rows
     benchmark_results.relative_error = (x - xe).norm() / xe.norm(); // Relative error
     benchmark_results.time_elapsed = end - start; // Time to solve the system
-    
+    benchmark_results.memory_used = read_mem_file_and_get_max(mem_file) - mem_after_reading;
     return benchmark_results;
 }
 

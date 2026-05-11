@@ -9,7 +9,7 @@
 #endif
 
 // Return the current process PID
-int get_pid() {
+inline int get_pid() {
 #ifdef _WIN32
     return static_cast<int>(GetCurrentProcessId()); // Windows PID retrieval
 #else
@@ -17,8 +17,50 @@ int get_pid() {
 #endif
 }
 
+inline double get_current_rss_mb() {
+#if defined(_WIN32)
+    PROCESS_MEMORY_COUNTERS pmc; // Get the counters that windows associates with the process
+
+    // Open the process with the rights to read virtual memory and to query process information
+    HANDLE process = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, get_pid());
+
+    if (!process) // If failed to open the process
+        return 0.0;
+
+    // Get the process memory informations
+    GetProcessMemoryInfo(process, &pmc, sizeof(pmc));
+
+    // Close the handle to the process
+    CloseHandle(process);
+
+    return (pmc.WorkingSetSize) / (1024.0 * 1024.0);
+
+#else
+    // Prepare system command
+    std::string cmd = "ps - p" + std::to_string(get_pid()) + " -o rss=";
+
+    // Launch the command and open the pipe to read its output
+    FILE* pipe = popen(cmd.c_str(), "r");
+
+    if (!pipe) // If failed to open the pipe
+        return 0.0;
+
+    // Prepare a buffer to read the pipe
+    char buffer[128];
+
+    std::string result;
+
+    while (fgets(buffer, sizeof(buffer), pipe) != nullptr)
+        string += buffer; // Read the output
+
+    pclose(pipe); // Close the pipe
+
+    return std::stod(result) / 1024.0;
+#endif
+}
+
 // Start the external memory profiler
-void start_sampler(int pid, const std::string& outfile) {
+inline void start_sampler(int pid, const std::string& outfile) {
 
 #if defined(_WIN32)
     // Kill previous profiler instances
@@ -36,6 +78,9 @@ void start_sampler(int pid, const std::string& outfile) {
     // Execute profiler process
     system(cmd.c_str());
 
+    // Pause the thread in order to wait for the profiler to start
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+
 #else
     // Linux/macOS profiler launcher
     std::string cmd =
@@ -47,8 +92,19 @@ void start_sampler(int pid, const std::string& outfile) {
 #endif
 }
 
+inline void stop_sampler() {
+#if defined(_WIN32)
+    system("taskkill /F /IM powershell.exe >nul 2>&1");
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+#else
+    // Linux
+#endif
+}
+
+
+
 // Read profiler output and return maximum memory usage
-int read_mem_file_and_get_max(const std::string& filename) {
+inline int read_mem_file_and_get_max(const std::string& filename) {
     int max = 0;
 
     // Open memory log file
