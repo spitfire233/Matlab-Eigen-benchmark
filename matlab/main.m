@@ -95,6 +95,11 @@ time  = time_vals(idx);
 peak_MB   = mem_vals(idx);
 relerr   = err_vals(idx);
 
+results.n        = n_vals(idx);
+results.time     = time_vals(idx);
+results.peak_MB  = mem_vals(idx);
+results.relerr   = err_vals(idx);
+
 % Save
 save('results.mat', ...
     'n', ...
