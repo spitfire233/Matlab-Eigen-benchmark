@@ -90,12 +90,16 @@ for k = 1:length(files)
         n_vals(k), time_vals(k), mem_vals(k),  err_vals(k));
 
     clear A x b xe
-    
+    if ispc
+        % Kill PowerShell samplers
+        system('taskkill /F /IM powershell.exe >nul 2>&1');
+    else
+        % Kill Linux memory samplers
+        system('pkill -f mem_sampler.sh >/dev/null 2>&1');
+    end
+
 end
 
-if ispc
-    system('taskkill /F /IM powershell.exe >nul 2>&1');
-end
 
 % Sort by matrix size
 [~, idx] = sort(n_vals);
