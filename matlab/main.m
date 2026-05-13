@@ -61,7 +61,7 @@ for k = 1:length(files)
     else
         system(sprintf('../profilers/mem_sampler.sh %d %s &', pid, outfile));
     end
-    pause(0.5);
+    pause(0.2);
 
     % computation
     tic
@@ -71,6 +71,13 @@ for k = 1:length(files)
     relerr = norm(x - xe) / norm(xe);
     solve_time = toc;
 
+    if ispc
+        % Kill PowerShell samplers
+        system('taskkill /F /IM powershell.exe >nul 2>&1');
+    else
+        % Kill Linux memory samplers
+        system('pkill -f mem_sampler.sh >/dev/null 2>&1');
+    end
     pause(0.5); % allow sampler to finish
 
     % read memory
@@ -86,17 +93,10 @@ for k = 1:length(files)
     mem_vals(k)   = peak_MB-init_mem;
     err_vals(k)   = relerr;
 
-    fprintf('n = %d | time = %.3f s | mem = %.2f MB | err = %.2e\n', ...
+    fprintf('n = %d | time = %.3f s | mem = %.3f MB | err = %.3e\n', ...
         n_vals(k), time_vals(k), mem_vals(k),  err_vals(k));
 
     clear A x b xe
-    if ispc
-        % Kill PowerShell samplers
-        system('taskkill /F /IM powershell.exe >nul 2>&1');
-    else
-        % Kill Linux memory samplers
-        system('pkill -f mem_sampler.sh >/dev/null 2>&1');
-    end
 
 end
 
