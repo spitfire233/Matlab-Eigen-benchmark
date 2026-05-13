@@ -61,7 +61,7 @@ for k = 1:length(files)
     else
         system(sprintf('../profilers/mem_sampler.sh %d %s &', pid, outfile));
     end
-    pause(0.2);
+    pause(0.5);
 
     % computation
     tic
@@ -71,7 +71,7 @@ for k = 1:length(files)
     relerr = norm(x - xe) / norm(xe);
     solve_time = toc;
 
-    pause(0.2); % allow sampler to finish
+    pause(0.5); % allow sampler to finish
 
     % read memory
     data = readmatrix(outfile);
