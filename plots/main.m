@@ -3,7 +3,7 @@ clear; clc; close all;
 %% =========================
 % LOAD MATLAB RESULTS
 %% =========================
-results = load('../matlab/results.mat');
+results = load('windows_results.mat');
 
 mat_dir = 'matlab/windows';
 cpp_dir = 'cpp/windows';
@@ -47,7 +47,7 @@ saveas(f3, fullfile(mat_dir, 'relative_error_vs_size.png'));
 %% =========================
 % LOAD C++ RESULTS
 %% =========================
-S = CSVToStruct('../cpp/out/build/results/Windows_benchmark.csv');
+S = CSVToStruct('windows_results.csv');
 
 %% =========================
 % C++ PLOTS
