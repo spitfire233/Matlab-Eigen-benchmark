@@ -73,9 +73,6 @@ inline void write_to_csv_file(const benchmark_results& result) {
     if (!file_exists) {
         file << "Name;Order;Time elapsed;Relative error;Memory used\n";
     }
-
-    file << std::fixed << std::setprecision(25);
-
     // Write data
     file << result.matrix_name << ";"
         << result.order << ";"

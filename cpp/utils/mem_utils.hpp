@@ -6,6 +6,8 @@
 #if defined(_WIN32)
 #include <windows.h> // Windows API
 #include <Psapi.h> // Process status API
+#else
+#include <unistd.h>
 #endif
 
 // Return the current process PID
@@ -37,7 +39,7 @@ inline double get_current_rss_mb() {
 
 #else
     // Prepare system command
-    std::string cmd = "ps - p" + std::to_string(get_pid()) + " -o rss=";
+    std::string cmd = "ps -p " + std::to_string(get_pid()) + " -o rss=";
 
     // Launch the command and open the pipe to read its output
     FILE* pipe = popen(cmd.c_str(), "r");
@@ -51,7 +53,7 @@ inline double get_current_rss_mb() {
     std::string result;
 
     while (fgets(buffer, sizeof(buffer), pipe) != nullptr)
-        string += buffer; // Read the output
+        result += buffer; // Read the output
 
     pclose(pipe); // Close the pipe
 
@@ -79,12 +81,12 @@ inline void start_sampler(int pid, const std::string& outfile) {
     system(cmd.c_str());
 
     // Pause the thread in order to wait for the profiler to start
-    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
 #else
     // Linux/macOS profiler launcher
     std::string cmd =
-        "./mem_sampler.sh " +
+        PROFILER_SCRIPT_PATH.string() + " " +
         std::to_string(pid) +
         " " + outfile +
         " &";
@@ -94,8 +96,8 @@ inline void start_sampler(int pid, const std::string& outfile) {
 
 inline void stop_sampler() {
 #if defined(_WIN32)
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
     system("taskkill /F /IM powershell.exe >nul 2>&1");
-    std::this_thread::sleep_for(std::chrono::milliseconds(200));
 #else
     // Linux
 #endif
@@ -104,8 +106,8 @@ inline void stop_sampler() {
 
 
 // Read profiler output and return maximum memory usage
-inline int read_mem_file_and_get_max(const std::string& filename) {
-    int max = 0;
+inline double read_mem_file_and_get_max(const std::string& filename) {
+    double max = 0.0;
 
     // Open memory log file
     std::ifstream in(filename);
@@ -119,8 +121,8 @@ inline int read_mem_file_and_get_max(const std::string& filename) {
     try {
         // Search for maximum value
         while (std::getline(in, line)) {
-            if (std::stoi(line) > max) {
-                max = stoi(line);
+            if (std::stod(line) > max) {
+                max = stod(line);
             }
         }
     }

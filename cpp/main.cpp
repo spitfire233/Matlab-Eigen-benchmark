@@ -17,9 +17,6 @@ int main(const int argc, char* argv[]) {
             std::filesystem::remove(mem_file);
         }
 
-        // Start the memory profiler in anothe process
-        start_sampler(pid, mem_file);
-
         // Calculate the matrix benchmark resulsts
         benchmark_results results = calulate_benchmark(matrix_file, pid, mem_file);
 
