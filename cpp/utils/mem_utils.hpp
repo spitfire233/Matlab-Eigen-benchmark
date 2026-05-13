@@ -29,7 +29,7 @@ inline double get_current_rss_mb() {
     if (!process) // If failed to open the process
         return 0.0;
 
-    // Get the process memory informations
+    // Get the process memory information
     GetProcessMemoryInfo(process, &pmc, sizeof(pmc));
 
     // Close the handle to the process
@@ -85,7 +85,7 @@ inline void start_sampler(int pid, const std::string& outfile) {
 
 #else
     // Linux/macOS profiler launcher
-    std::string cmd =
+    const std::string cmd =
         PROFILER_SCRIPT_PATH.string() + " " +
         std::to_string(pid) +
         " " + outfile +
@@ -99,7 +99,7 @@ inline void stop_sampler() {
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
     system("taskkill /F /IM powershell.exe >nul 2>&1");
 #else
-    // Linux
+    system("pkill -f mem_sampler.sh >/dev/null 2>&1");
 #endif
 }
 

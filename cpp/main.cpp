@@ -17,7 +17,7 @@ int main(const int argc, char* argv[]) {
             std::filesystem::remove(mem_file);
         }
 
-        // Calculate the matrix benchmark resulsts
+        // Calculate the matrix benchmark results
         benchmark_results results = calulate_benchmark(matrix_file, pid, mem_file);
 
         // Pause the thread in order to allow the profiler to finish writing
@@ -32,11 +32,7 @@ int main(const int argc, char* argv[]) {
         // Write the results to the CSV file
         write_to_csv_file(results);
     }
-
-    // Kill last profiler process
-    #ifdef _WIN32
-        system("taskkill /F /IM powershell.exe >nul 2>&1");
-    #endif
+    stop_sampler();
 
     return 0;
 }

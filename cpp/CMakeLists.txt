@@ -83,10 +83,30 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(fast_matrix_market) # Download and make dependency available
 
 find_package(Eigen3 REQUIRED) # Locate Eigen3 library
-find_package(BLAS) # Locate generic BLAS library
-find_package(OpenBLAS REQUIRED) # Locate OpenBLAS library
+if (MSVC)
+    find_package(OpenBLAS REQUIRED) # Locate OpenBLAS library
+    find_package(SuiteSparse CONFIG REQUIRED) # Locate SuiteSparse package
+else ()
+    find_package(BLAS REQUIRED)
+
+    message(STATUS "BLAS libraries: ${BLAS_LIBRARIES}")
+
+    find_path(SUITESPARSE_INCLUDE_DIR cholmod.h
+            PATHS /usr/include/suitesparse
+    )
+
+    find_library(CHOLMOD_LIBRARY cholmod)
+    find_library(AMD_LIBRARY amd)
+    find_library(COLAMD_LIBRARY colamd)
+    find_library(CAMD_LIBRARY camd)
+    find_library(CCOLAMD_LIBRARY ccolamd)
+    find_library(SUITESPARSECONFIG_LIBRARY suitesparseconfig)
+
+    if(NOT CHOLMOD_LIBRARY)
+        message(FATAL_ERROR "CHOLMOD not found")
+    endif()
+endif ()
 find_package(OpenMP REQUIRED) # Locate OpenMP support
-find_package(SuiteSparse CONFIG REQUIRED) # Locate SuiteSparse package
 add_executable(${PROJECT_NAME} "main.cpp" utils/utils.hpp) # Create executable target
 
 # Enable High-Level optimization and vectorization
@@ -114,11 +134,33 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
         EIGEN_USE_BLAS # Enable BLAS backend in Eigen
         EIGEN_USE_LAPACKE # Enable LAPACKE backend in Eigen
 )
-target_link_libraries(${PROJECT_NAME} PRIVATE ${SuiteSparse_LIBRARIES}) # Link SuiteSparse libraries
-target_link_libraries(${PROJECT_NAME} PRIVATE
-        Eigen3::Eigen # Link Eigen library
-        SuiteSparse::cholmod # Link CHOLMOD sparse matrix library
-        fast_matrix_market::fast_matrix_market # Link fast matrix market parser
-        OpenBLAS::OpenBLAS # Link OpenBLAS implementation
-        OpenMP::OpenMP_CXX # Link OpenMP C++ support
-)
+
+if (MSVC)
+    target_link_libraries(${PROJECT_NAME} PRIVATE ${SuiteSparse_LIBRARIES}) # Link SuiteSparse libraries
+    target_link_libraries(${PROJECT_NAME} PRIVATE
+            Eigen3::Eigen # Link Eigen library
+            SuiteSparse::cholmod # Link CHOLMOD sparse matrix library
+            fast_matrix_market::fast_matrix_market # Link fast matrix market parser
+            OpenBLAS::OpenBLAS # Link OpenBLAS implementation
+            OpenMP::OpenMP_CXX # Link OpenMP C++ support
+    )
+else ()
+    target_include_directories(${PROJECT_NAME} PRIVATE
+            ${SUITESPARSE_INCLUDE_DIR}
+    )
+
+    target_link_libraries(${PROJECT_NAME} PRIVATE
+            Eigen3::Eigen
+            fast_matrix_market::fast_matrix_market
+            BLAS::BLAS
+            OpenMP::OpenMP_CXX
+            ${CHOLMOD_LIBRARY}
+            ${AMD_LIBRARY}
+            ${COLAMD_LIBRARY}
+            ${CAMD_LIBRARY}
+            ${CCOLAMD_LIBRARY}
+            ${SUITESPARSECONFIG_LIBRARY}
+    )
+endif ()
+
+
