@@ -14,5 +14,5 @@ while (Get-Process -Id $pid -ErrorAction SilentlyContinue) {
 
     "$memKB" | Out-File $outfile -Append -Encoding ascii
 
-    Start-Sleep -Milliseconds 50
+    Start-Sleep -Milliseconds 10
 }
