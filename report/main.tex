@@ -1,0 +1,25 @@
+\documentclass{report}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage{hyperref}
+\title{Report primo progetto di Metodi del calcolo scientifico}
+\author{Daniele Besozzi 894998 \\ Andrea Consonni 900116 \\ Matteo Cervini 902225}
+\date{\today}
+\begin{document}
+\maketitle
+
+\tableofcontents
+\chapter{Presentazione degli ambienti}
+\input{sections/Ambienti.tex}
+\chapter{Tempo di esecuzione}
+\input{sections/Tempo.tex}
+\chapter{Utilizzo della memoria}
+\input{sections/Memoria.tex}
+\chapter{Precisione delle soluzioni}
+\input{sections/Precisione.tex}
+\chapter{Conclusioni}
+\input{sections/Conclusioni.tex}
+\bibliographystyle{plain}
+\bibliography{bibliography}
+\end{document}

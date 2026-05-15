@@ -1,0 +1,32 @@
+Le misure effettuate per questo progetto sono state eseguite su una macchina con le seguenti caratteristiche:
+\begin{itemize}
+	\item Processore: AMD ryzen 7 5700G (8 core, 16 thread, 3.8 GHz)
+	\item RAM: 32 GB DDR4 3200 MHz
+	\item Sistemi operativi: Windows 11 e Linux Fedora 44
+	\item Linguaggi di programmazione: C++ e Matlab
+	\item Dischi: SSD NVMe 
+\end{itemize}
+\section{Matlab}
+Per quanto riguarda Matlab, abbiamo utilizzato la versione R2025b.
+Per la risoluzione dei sistemi di equazioni è stato utilizzato il comando \texttt{mldivide}, che implementa una serie di controlli per scegliere il metodo più adatto a seconda del tipo di matrice (densa, sparsa, simmetrica, ecc.).
+\begin{figure}
+	\centering
+	\includegraphics[height=0.95\textheight]{figures/mldivide_sparse.png}
+	\caption{Scelta del metodo di risoluzione in Matlab per matrici sparse di \texttt{mldivide} \cite{noauthor_mldivide_nodate}.}
+	\label{fig:mldivide_sparse}
+\end{figure}
+Questa libreria viene mantenuta e aggiornata regolarmente da MathWorks, ottimizzando i metodi di risoluzione per alcuni tipi di matrici	e migliorando le prestazioni complessive.
+La documentazione ufficiale di Matlab fornisce i dettagli sulla selezione del metodo di risoluzione in base alle caratteristiche della matrice, dividendo in due macro categorie: matrici dense e matrici sparse.
+In particolare, in figura~\ref{fig:mldivide_sparse} possiamo vedere il processo di selezione del metodo di risoluzione per matrici sparse, che è quello che abbiamo utilizzato per i nostri benchmark.
+\section{C++}
+Per quanto riguarda C++, abbiamo scelto di utilizzare la libreria Eigen, la quale mette a disposizione una vasta gamma di funzioni per la manipolazione di matrici e vettori, nonché per la risoluzione di sistemi di equazioni lineari.
+Eigen permette inoltre di interfacciarsi con diversi moduli esterni per la risoluzione di sistemi di equazioni lineari sparse, come ad esempio il pacchetto SuiteSparse, il quale è stato utilizzato per i nostri benchmark.
+In particolare, abbiamo utilizzato la libreria CHOLMOD di SuiteSparse.
+L'interfaccia di Eigen per CHOLMOD, contenuta nel modulo \texttt{CholmodSupport} \cite{cholmod_eigen}, permette di sfruttare le diverse funzioni offerte dalla libreria.
+Il metodo di risoluzione scelto sfrutta l'implementazione supernodale di Cholesky \cite{supernodal_chol_eigen}, il quale permette di sfruttare al meglio la parallelizzazione su CPU e di ottenere un confronto più equo con Matlab rispetto
+al risolutore standard di Eigen.
+In particolare, CHOLMOD implementa una versione supernodale della fattorizzazione di Cholesky.
+Gli algoritmi supernodali si basano su una decomposizione della matrice $A$ in $L$ e $U=L^T$ in termini di blocchi di colonne, chiamati supernodi. CHOLMOD è composto da tre fasi di calcolo principali:
+la prima analizza la struttura della matrice e riordina le righe e le colonne per minimizzare il fill-in, ovvero l'introduzione di elementi non-nulli in $L$ che non compaiono nella posizione corrispondente in $A$.
+La seconda fase fattorizza la matrice applicando operazioni sui supernodi, e la terza risolve due sistemi triangolari di equazioni: $Ly = b$ e $L^T x = y$ nel caso della fattorizzazione di Cholesky.
+Tra le tre fasi, quella di fattorizzazione rappresenta la parte computazionalmente più onerosa del risolutore CHOLMOD\cite{le_fevre_selective_2022}.
