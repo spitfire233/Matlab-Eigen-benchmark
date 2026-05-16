@@ -1,11 +1,21 @@
 \documentclass{report}
+\usepackage{csquotes}
 \usepackage{float}
 \usepackage{graphicx}
+\usepackage[italian]{babel}
 \usepackage[a4paper,margin=2.5cm]{geometry}
-\usepackage{hyperref}
+\usepackage[hidelinks]{hyperref}
+\usepackage[
+backend=biber,
+style=ieee,
+sorting=none,
+]{biblatex}
 \title{Report primo progetto di Metodi del calcolo scientifico}
 \author{Daniele Besozzi 894998 \\ Andrea Consonni 900116 \\ Matteo Cervini 902225}
 \date{\today}
+
+\addbibresource{bibliography.bib}
+
 \begin{document}
 \maketitle
 
@@ -20,6 +30,7 @@
 \input{sections/Precisione.tex}
 \chapter{Conclusioni}
 \input{sections/Conclusioni.tex}
-\bibliographystyle{plain}
-\bibliography{bibliography}
+
+\printbibliography
+
 \end{document}

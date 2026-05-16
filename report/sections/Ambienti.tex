@@ -19,6 +19,17 @@ Questa libreria viene mantenuta e aggiornata regolarmente da MathWorks, ottimizz
 La documentazione ufficiale di Matlab fornisce i dettagli sulla selezione del metodo di risoluzione in base alle caratteristiche della matrice, dividendo in due macro categorie: matrici dense e matrici sparse.
 In particolare, in figura~\ref{fig:mldivide_sparse} possiamo vedere il processo di selezione del metodo di risoluzione per matrici sparse, che è quello che abbiamo utilizzato per i nostri benchmark.
 \section{C++}
+Per quanto riguarda C++, abbiamo scelto di utilizzare la libreria \texttt{Eigen}, la quale mette a disposizione
+una vasta gamma di funzioni per l'algebra lineare, tra cui la manipolazione di matrici e vettori
+
+
+
+
+
+
+
+
+
 Per quanto riguarda C++, abbiamo scelto di utilizzare la libreria Eigen, la quale mette a disposizione una vasta gamma di funzioni per la manipolazione di matrici e vettori, nonché per la risoluzione di sistemi di equazioni lineari.
 Eigen permette inoltre di interfacciarsi con diversi moduli esterni per la risoluzione di sistemi di equazioni lineari sparse, come ad esempio il pacchetto SuiteSparse, il quale è stato utilizzato per i nostri benchmark.
 In particolare, abbiamo utilizzato la libreria CHOLMOD di SuiteSparse.
