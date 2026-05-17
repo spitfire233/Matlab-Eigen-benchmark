@@ -10,6 +10,53 @@ backend=biber,
 style=ieee,
 sorting=none,
 ]{biblatex}
+\usepackage{xcolor}
+\usepackage{listings}
+
+% Define CMake language
+\lstdefinelanguage{CMake}{
+  keywords={
+    add_executable, add_library, target_link_libraries,
+    target_include_directories, project, cmake_minimum_required,
+    set, if, endif, else, elseif, foreach, endforeach,
+    while, endwhile, function, endfunction, macro, endmacro,
+    include, find_package, message, option,
+    install, file, configure_file,
+    target_compile_definitions,
+    target_compile_options,
+    target_sources,
+    enable_testing,
+    add_test
+  },
+  sensitive=true,
+  morecomment=[l]{\#},
+  morestring=[b]",
+}
+
+% Define style
+\lstdefinestyle{cmake}{
+  language=CMake,
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{gray}\itshape,
+  stringstyle=\color{green!50!black},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  stepnumber=1,
+  numbersep=10pt,
+  backgroundcolor=\color{black!2},
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  frame=single,
+  rulecolor=\color{black!20},
+  tabsize=2,
+  breaklines=true,
+  breakatwhitespace=true,
+  captionpos=b,
+  columns=fullflexible
+}
+
 \title{Report primo progetto di Metodi del calcolo scientifico}
 \author{Daniele Besozzi 894998 \\ Andrea Consonni 900116 \\ Matteo Cervini 902225}
 \date{\today}

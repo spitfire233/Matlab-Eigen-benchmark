@@ -19,15 +19,23 @@ Questa libreria viene mantenuta e aggiornata regolarmente da MathWorks, ottimizz
 La documentazione ufficiale di Matlab fornisce i dettagli sulla selezione del metodo di risoluzione in base alle caratteristiche della matrice, dividendo in due macro categorie: matrici dense e matrici sparse.
 In particolare, in figura~\ref{fig:mldivide_sparse} possiamo vedere il processo di selezione del metodo di risoluzione per matrici sparse, che è quello che abbiamo utilizzato per i nostri benchmark.
 \section{C++}
-Per quanto riguarda C++, abbiamo scelto di utilizzare la libreria \texttt{Eigen}, la quale mette a disposizione
-una vasta gamma di funzioni per l'algebra lineare, come per la manipolazione di matrici e vettori oppure per la risoluzione
-di sistemi di equazioni lineari.
-Eigen permette inoltre di interfacciarsi con diversi moduli esterni per la risoluzione  di sistemi di equazioni lineari, come, ad esempio, il pacchetto SuiteSparse,
+Lo sviluppo del programma in C++ ha richiesto l'utilizzo di diverse librerie, con l'obiettivo di garantire un confronto equo 
+con il programma sviluppato per Matlab. 
+Questa sezione andrà ad illustrare le principali tecnologie e librerie adottate, 
+descrivendone brevemente le caratteristiche, lo stato di manutenzione e la qualità della relativa documentazione.
+\subsection{Eigen}
+\texttt{Eigen} è una libreria open source per l'algebra lineare che offre una vasta gamma di classi e funzioni per la manipolazione di matrici e vettori, la rappresentazioni di diversi
+tipi di oggetti matematici e per la risoluzione di sistemi di equazioni lineari.
+La libreria è stata progettata per essere semplice da installare, efficiente e affidabile.
+\texttt{Eigen} permette inoltre di interfacciarsi con diversi moduli esterni per la risoluzione  di sistemi di equazioni lineari, come, ad esempio, il pacchetto \texttt{SuiteSparse},
 il quale è stato utilizzato per i benchmark presentati in questo report.
-In particolare, abbiamo utilizzato la libreria \texttt{CHOLMOD} di SuiteSparse, la quale offre un metodo di risoluzione tramite fattorizzazione di Cholesky più efficiente rispetto al risolutore standard con metodo di Cholesky offerto da Eigen \cite{eigen_simpicial_llt}. 
-L'interfaccia di Eigen per \texttt{CHOLMOD}, contenuta nel modulo \texttt{CholmodSupport} \cite{cholmod_eigen}, permette di sfruttare le diverse funzionalità offerte dalla libreria.
+In particolare, abbiamo utilizzato la libreria \texttt{CHOLMOD} di \texttt{SuiteSparse}, la quale offre un metodo di risoluzione tramite fattorizzazione di Cholesky più efficiente rispetto al risolutore standard con metodo di Cholesky offerto da \texttt{Eigen} \cite{eigen_simpicial_llt}. 
+L'interfaccia di \texttt{Eigen} per \texttt{CHOLMOD}, contenuta nel modulo \texttt{CholmodSupport} \cite{cholmod_eigen}, permette di sfruttare le diverse funzionalità offerte dalla libreria.
+\texttt{Eigen} è attivamente supportata e manutenuta, con l'ultima versione stabile della libreria (\texttt{5.0.0}) rilasciata il 30 settembre 2025.
+La documentazione di Eigen è di ottima qualità e include sia tutorial introduttivi su installazione e utilizzo, sia sezioni più approfondite 
+sul funzionamento interno della libreria e sulla sua integrazione con altre tecnologie e solver.
 \subsection{CHOLMOD}
-\texttt{CHOLMOD} è una libreria che permette di svolgere efficientemente diverse operazioni su matrici sparse.
+\texttt{CHOLMOD} è una libreria, facente parte del pacchetto \texttt{SuiteSparse}, che permette di svolgere efficientemente diverse operazioni su matrici sparse.
 In particolare, la libreria offre funzioni per la fattorizzazione di matrici sparse, simmetriche e definite positive
 tramite il metodo di Cholesky e per la risoluzione di sistemi lineari. La libreria è scritta nel linguaggio di programmazione C.
 Sia $A$ una matrice sparsa, simmetrica e definita positiva; allora la sua decomposizione ottenuta usando il metodo di Cholesky è $A = LL^T$,
@@ -35,9 +43,6 @@ con $L$ una matrice triangolare inferiore.
 \texttt{CHOLMOD} implementa due tipi di risolutori di sistemi di equazioni lineari sparsi che sfruttano questa decomposizione:
 uno \textbf{supernodale} e uno \textbf{non-supernodale} \cite{chen_algorithm_2008}.
 In particolare, abbiamo scelto di utilizzare l'implementazione \textbf{supernodale} dell'algoritmo di risoluzione, il quale è accessibile in Eigen costruendo un risolutore della classe \texttt{CholmodSupernodalLLT}\cite{supernodal_chol_eigen}.
-%Informalmente, data le decomposizione di Cholesky $A = LL^T$, un \textbf{supernodo} è un insieme di colonne adiacenti di $L$ aventi un pattern identico di entrate non nulle.
-%I supernodi sono tipicamente immagazzinati in memoria in modo tale da sfruttarne la struttura, come, per esempio, in matrici dense di dimensioni $s \times z$, dove
-%$s$ è il numero di entrate non nulle nella prima colonna del supernodo e $z$ è il numero di colonne nel supernodo \cite{davis_dynamic_2009}.
 Gli algoritmi supernodali si basano sulla decomposizione della matrice $A$ in termini di blocchi di colonne, chiamati \textbf{supernodi}. L'algoritmo implementato da CHOLMOD è composto da tre fasi di calcolo principali:
 \begin{enumerate}
 	\item La prima analizza la struttura della matrice e riordina le righe e le colonne per minimizzare il fill-in, ovvero l'introduzione di elementi non-nulli in $L$ che non compaiono nella posizione corrispondente in $A$.
@@ -57,6 +62,11 @@ Infine, \texttt{CHOLMOD} dipende inoltre da diverse librerie per effettuare i ca
 	\item \textbf{Linear Algebra PACKage (LAPACK)}: LAPACK \cite{lapack_doc} è una libreria che offre diverse funzioni per la risoluzione di sistemi lineari. La libreria dipende dalla presenza di un'implementazione di BLAS ed è scritta
 	in modo tale che la computazione sia svolta effettuando il più possibile chiamate alle funzioni offerte dall'implementazione di BLAS sottostante.
 \end{itemize}
+\texttt{SuiteSparse} e \texttt{CHOLMOD} sono librerie attivamente manutenute. 
+In particolare, \texttt{CHOLMOD} dispone di una documentazione tecnica ampia e dettagliata \cite{cholmod_doc}, la
+quale copre in modo esaustivo sia gli aspetti implementativi sia le modalità d'uso della libreria. 
+Inoltre, \texttt{CHOLMOD} viene descritta dai suoi autori in \cite{chen_algorithm_2008}.
+
 \subsection{Formato Matrix Market}
 Per mantenere il programma scritto in C++ completamente indipendente da tecnologie o formati proprietari, si è deciso
 di utilizzare la rappresentazione delle matrici di test nel formato \textbf{Matrix Market Exchange Format} \cite{matrix_market}, un formato di file per la rappresentazione di matrici creato dal \textbf{National Institute for Standards and Technology} (NIST) e scritto completamente in caratteri ASCII.
@@ -80,13 +90,27 @@ Un file in formato Matrix Market è composto da 4 parti \cite{noauthor_matrix_no
 	\item \textbf{Size line}: indica il numero di righe e colonne della matrice, nonché il numero di entrate non nulle
 	\item \textbf{Data lines}: specifica la posizione delle entrate della matrice e il loro valore
 \end{enumerate}
-Per permette un caricamento rapido delle matrici in questo formato, si è deciso di utilizzare la libreria \texttt{fast\_matrix\_market}\cite{lugowski_fast_matrix_market_2023},
-la quale mette a disposizione un modulo per caricare le matrici sparse direttamente nei tipi di oggetti definiti da \texttt{Eigen}.
-\subsection{CMake}
-
-
-
-
+Per permette un caricamento rapido delle matrici in questo formato, si è deciso di utilizzare la libreria open source \texttt{fast\_matrix\_market}\cite{lugowski_fast_matrix_market_2023},
+la quale mette a disposizione un modulo veloce e parallelizzato per caricare le matrici sparse direttamente nei tipi di oggetti definiti da \texttt{Eigen}.
+\texttt{fast\_matrix\_market} non è più attivamente sviluppato (l'ultima commit al progetto risale a 2 anni prima della stesura di questo report).
+Inoltre, la libreria non dispone di una documentazione ufficiale, preferendo invece l'utilizzo di brevi file README che descrivono le funzionalità disponibili, le scelte implementative adottate e alcuni esempi d’uso per sfruttarne al meglio le funzionalità.
+\subsection{Cross platform Make (CMake)}
+\textbf{Cross platform Make} \cite{cmake-docs}, abbreviato in CMake, è uno strumento di automazione che permette di gestire in maniera semplice il processo di compilazione
+e build di un progetto. CMake è largamente usato per i linguaggi C e C++, tuttavia esso può essere usato per la gestione di progetti scritti anche in altri linguaggi di programmazione.
+Il tipico uso di CMake ruota intorno ad uno più file \texttt{CMakeList.txt}, comunemente chiamati "list files". In un progetto software gestito con CMake, avremo un list file per ogni
+cartella per la quale vogliamo specificare le modalità di gestione dei file e quali sono le operazioni necessarie da svolgere al suo interno.
+Nel progetto C++ sviluppato per questo benchmark, abbiamo utilizzato un singolo list file per la gestione di tutto il progetto, nel quale vengono specificate
+le seguenti operazioni da svolgere ogni volta che il progetto viene compilato:
+\begin{enumerate}
+	\item Se non sono presenti, scaricare le matrici di test in formato .mtx
+	\item Importare tutte le dipendenze necessarie al funzionamento del progetto
+	\item Specificare come le dipendenze debbano essere linkate al progetto e quali solo le flag di ottimizzazione che il compilatore deve utilizzare
+	\item Disabilitare le asserzioni interne ad \texttt{Eigen} (linee di codice utilizzate per effettuare dei test interni durante l'esecuzione), per migliorare la velocità di esecuzione del programma, ed indicare alla libreria di utilizzare l'implementazione di \texttt{BLAS} presente nel sistema
+	\item Rendere disponibili al programma i percorsi delle cartelle rilevanti per l'esecuzione del progetto, per evitare di indicarli esplicitamente per ogni sistema operativo
+\end{enumerate} 
+CMake è un software costantemente aggiornato e supportato da una documentazione completa e ben strutturata. 
+La documentazione mette a disposizione sia guide introduttive per familiarizzare con lo strumento, 
+sia sezioni di riferimento dettagliate per tutti i comandi offerti.
 \section{Windows}
 
 
