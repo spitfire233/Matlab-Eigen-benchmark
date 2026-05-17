@@ -26,7 +26,7 @@ Eigen permette inoltre di interfacciarsi con diversi moduli esterni per la risol
 il quale è stato utilizzato per i benchmark presentati in questo report.
 In particolare, abbiamo utilizzato la libreria \texttt{CHOLMOD} di SuiteSparse, la quale offre un metodo di risoluzione tramite fattorizzazione di Cholesky più efficiente rispetto al risolutore standard con metodo di Cholesky offerto da Eigen \cite{eigen_simpicial_llt}. 
 L'interfaccia di Eigen per \texttt{CHOLMOD}, contenuta nel modulo \texttt{CholmodSupport} \cite{cholmod_eigen}, permette di sfruttare le diverse funzionalità offerte dalla libreria.
-\subsubsection{CHOLMOD}
+\subsection{CHOLMOD}
 \texttt{CHOLMOD} è una libreria che permette di svolgere efficientemente diverse operazioni su matrici sparse.
 In particolare, la libreria offre funzioni per la fattorizzazione di matrici sparse, simmetriche e definite positive
 tramite il metodo di Cholesky e per la risoluzione di sistemi lineari. La libreria è scritta nel linguaggio di programmazione C.
@@ -57,7 +57,40 @@ Infine, \texttt{CHOLMOD} dipende inoltre da diverse librerie per effettuare i ca
 	\item \textbf{Linear Algebra PACKage (LAPACK)}: LAPACK \cite{lapack_doc} è una libreria che offre diverse funzioni per la risoluzione di sistemi lineari. La libreria dipende dalla presenza di un'implementazione di BLAS ed è scritta
 	in modo tale che la computazione sia svolta effettuando il più possibile chiamate alle funzioni offerte dall'implementazione di BLAS sottostante.
 \end{itemize}
+\subsection{Formato Matrix Market}
+Per mantenere il programma scritto in C++ completamente indipendente da tecnologie o formati proprietari, si è deciso
+di utilizzare la rappresentazione delle matrici di test nel formato \textbf{Matrix Market Exchange Format} \cite{matrix_market}, un formato di file per la rappresentazione di matrici creato dal \textbf{National Institute for Standards and Technology} (NIST) e scritto completamente in caratteri ASCII.
+Questo formato prevede due tipi diversi di rappresentazione per le matrici:
+\begin{itemize}
+	\item \textbf{Formato a Coordinate}: Questo formato è adatto per rappresentare generiche matrici sparse. Vengono fornite solamente le entrate non nulle e le loro coordinate all'interno della matrice.
+	\item \textbf{Formato ad array}: Questo formato è adatto per rappresentare generiche matrici dense. Vengono fornite tutte le entrate, elencate per colonne.
+\end{itemize}
+Un file in formato Matrix Market è composto da 4 parti \cite{noauthor_matrix_nodate}:
+\begin{enumerate}
+	\item \textbf{Header Line}: contiene un identificatore e quattro campi testuali.
+	L'header deve essere la prima riga del file e può avere la forma \texttt{\%MatrixMarket object format field symmetry} oppure la forma \texttt{\%\%MatrixMarket object format field symmetry}.
+	I quattro campi testuali che seguono la prima stringa possono avere i seguenti valori:
+	\begin{itemize}
+		\item \textbf{object}: il tipo di oggetto rappresentato; può avere valore \texttt{matrix}, per le matrici, oppure \texttt{vector}, per i vettori
+		\item \textbf{format}: il tipo di rappresentazione contenuta nel file, può avere valore \texttt{coordinate} oppure \texttt{array}
+		\item \textbf{field}: il tipo di entrate della matrice, può assumere i valori \texttt{integer, real, double, complex} o \texttt{pattern}. Nel caso di quest'ultimo valore, nel file verranno indicate solamente le coordinate delle entrate non nulle, senza il loro valore.
+		\item \textbf{symmetry}: il tipo di simmetria della matrice, può avere i valori \texttt{general} (utilizzabile per i valori \texttt{real, complex, integer} o \texttt{pattern} di field), \texttt{symmetric} (\texttt{real, complex, integer} o \texttt{pattern}), \texttt{skew-symmetric} (\texttt{real, complex, integer}) o \texttt{hermitian} (\texttt{complex})
+	\end{itemize}
+	\item \textbf{Comment lines}: permette al creatore del file di inserire commenti
+	\item \textbf{Size line}: indica il numero di righe e colonne della matrice, nonché il numero di entrate non nulle
+	\item \textbf{Data lines}: specifica la posizione delle entrate della matrice e il loro valore
+\end{enumerate}
+Per permette un caricamento rapido delle matrici in questo formato, si è deciso di utilizzare la libreria \texttt{fast\_matrix\_market}\cite{lugowski_fast_matrix_market_2023},
+la quale mette a disposizione un modulo per caricare le matrici sparse direttamente nei tipi di oggetti definiti da \texttt{Eigen}.
+\subsection{CMake}
+
+
+
+
 \section{Windows}
+
+
+
 
 \section{Linux}
 
