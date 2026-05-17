@@ -1,70 +1,108 @@
 
-@online{noauthor_mldivide_nodate,
-	title = {mldivide - Solve systems of linear equations Ax = B for x - {MATLAB}},
+@article{davis_dynamic_2009,
+	title = {Dynamic {Supernodes} in {Sparse} {Cholesky} {Update}/{Downdate} and {Triangular} {Solves}},
+	volume = {35},
+	issn = {0098-3500},
+	url = {https://dl.acm.org/doi/10.1145/1462173.1462176},
+	doi = {10.1145/1462173.1462176},
+	abstract = {The supernodal method for sparse Cholesky factorization represents the factor L as a set of supernodes, each consisting of a contiguous set of columns of L with identical nonzero pattern. A conventional supernode is stored as a dense submatrix. While this is suitable for sparse Cholesky factorization where the nonzero pattern of L does not change, it is not suitable for methods that modify a sparse Cholesky factorization after a low-rank change to A (an update/downdate, A = A ± WWT). Supernodes merge and split apart during an update/downdate. Dynamic supernodes are introduced which allow a sparse Cholesky update/downdate to obtain performance competitive with conventional supernodal methods. A dynamic supernodal solver is shown to exceed the performance of the conventional (BLAS-based) supernodal method for solving triangular systems. These methods are incorporated into CHOLMOD, a sparse Cholesky factorization and update/downdate package which forms the basis of x = A{\textbackslash}b MATLAB when A is sparse and symmetric positive definite.},
+	number = {4},
+	urldate = {2026-05-16},
+	journal = {ACM Transactions on Mathematical Software (TOMS)},
+	author = {Davis, Timothy A. and Hager, William W.},
+	month = feb,
+	year = {2009},
+	pages = {27:1--27:23},
+	file = {Full Text PDF:files/14/Davis e Hager - 2009 - Dynamic Supernodes in Sparse Cholesky UpdateDowndate and Triangular Solves.pdf:application/pdf},
+}
+
+@misc{noauthor_mldivide_nodate,
+	title = {mldivide - {Solve} systems of linear equations {Ax} = {B} for x - {MATLAB}},
 	url = {https://it.mathworks.com/help/matlab/ref/double.mldivide.html},
-	abstract = {This {MATLAB} function solves the system of linear equations A*x = B.},
+	abstract = {This MATLAB function solves the system of linear equations A*x = B.},
 	urldate = {2026-05-14},
-	langid = {italian},
-	file = {Snapshot:/home/daniele/Zotero/storage/2XEYDMJD/double.mldivide.html:text/html},
 }
 
 @inproceedings{le_fevre_selective_2022,
-	title = {A Selective Nesting Approach for the Sparse Multi-threaded Cholesky Factorization},
+	title = {A {Selective} {Nesting} {Approach} for the {Sparse} {Multi}-threaded {Cholesky} {Factorization}},
 	issn = {2831-3631},
 	url = {https://ieeexplore.ieee.org/document/10029458},
 	doi = {10.1109/ESPM256814.2022.00006},
 	abstract = {Sparse linear algebra routines are fundamental building blocks of a large variety of scientific applications. Direct solvers, which are methods for solving linear systems via the factorization of matrices into products of triangular matrices, are commonly used in many contexts. The Cholesky factorization is the fastest direct method for symmetric and positive definite matrices. This paper presents selective nesting, a method to determine the optimal task granularity for the parallel Cholesky factorization based on the structure of sparse matrices. We propose the Opt-D algorithm, which automatically and dynamically applies selective nesting. Opt-D leverages matrix sparsity to drive complex task-based parallel workloads in the context of direct solvers. We run an extensive evaluation campaign considering a heterogeneous set of 35 sparse matrices and a parallel machine featuring the A64FX processor. Opt-D delivers an average performance speedup of 1.75× with respect to the best state-of-the-art parallel methods to run direct solvers.},
-	eventtitle = {2022 {IEEE}/{ACM} 7th International Workshop on Extreme Scale Programming Models and Middleware ({ESPM}2)},
-	pages = {1--9},
-	booktitle = {2022 {IEEE}/{ACM} 7th International Workshop on Extreme Scale Programming Models and Middleware ({ESPM}2)},
-	author = {Le Fèvre, Valentin and Usui, Tetsuzo and Casas, Marc},
 	urldate = {2026-05-15},
-	date = {2022-11},
-	note = {{ISSN}: 2831-3631},
+	booktitle = {2022 {IEEE}/{ACM} 7th {International} {Workshop} on {Extreme} {Scale} {Programming} {Models} and {Middleware} ({ESPM2})},
+	author = {Le Fèvre, Valentin and Usui, Tetsuzo and Casas, Marc},
+	month = nov,
+	year = {2022},
 	keywords = {cholesky, Context, granularity, Heuristic algorithms, Linear algebra, Linear systems, multi-threading, Parallel machines, parallel tasks, Programming, sparse matrix, Symmetric matrices},
-	file = {Full Text PDF:/home/daniele/Zotero/storage/6C969Y2V/Le Fèvre et al. - 2022 - A Selective Nesting Approach for the Sparse Multi-threaded Cholesky Factorization.pdf:application/pdf},
+	pages = {1--9},
 }
 
-@online{cholmod_eigen,
+@misc{cholmod_eigen,
 	title = {Eigen: {CholmodSupport} module},
 	url = {https://libeigen.gitlab.io/eigen/docs-5.0/group__CholmodSupport__Module.html},
 	urldate = {2026-05-15},
-	file = {Eigen\: CholmodSupport module:/home/daniele/Zotero/storage/ETKZXB9Y/group__CholmodSupport__Module.html:text/html},
 }
 
 @article{chen_algorithm_2008,
-	title = {Algorithm 887: {CHOLMOD}, Supernodal Sparse Cholesky Factorization and Update/Downdate},
+	title = {Algorithm 887: {CHOLMOD}, {Supernodal} {Sparse} {Cholesky} {Factorization} and {Update}/{Downdate}},
 	volume = {35},
 	issn = {0098-3500, 1557-7295},
+	shorttitle = {Algorithm 887},
 	url = {https://dl.acm.org/doi/10.1145/1391989.1391995},
 	doi = {10.1145/1391989.1391995},
-	shorttitle = {Algorithm 887},
-	abstract = {{CHOLMOD} is a set of routines for factorizing sparse symmetric positive definite matrices of the form
-              A
-              or
-              {AA}
-              T
-              , updating/downdating a sparse Cholesky factorization, solving linear systems, updating/downdating the solution to the triangular system
-              Lx
-               = 
-              b
-              , and many other sparse matrix functions for both symmetric and unsymmetric matrices. Its supernodal Cholesky factorization relies on {LAPACK} and the Level-3 {BLAS}, and obtains a substantial fraction of the peak performance of the {BLAS}. Both real and complex matrices are supported. {CHOLMOD} is written in {ANSI}/{ISO} C, with both C and {MATLAB}
-              {TM}
-              interfaces. It appears in {MATLAB} 7.2 as x = A{\textbackslash}b when A is sparse symmetric positive definite, as well as in several other sparse matrix functions.},
-	pages = {1--14},
 	number = {3},
-	journaltitle = {{ACM} Transactions on Mathematical Software},
-	shortjournal = {{ACM} Trans. Math. Softw.},
-	author = {Chen, Yanqing and Davis, Timothy A. and Hager, William W. and Rajamanickam, Sivasankaran},
 	urldate = {2026-05-15},
-	date = {2008-10},
-	langid = {english},
-	file = {PDF:/home/daniele/Zotero/storage/X9DD8TKQ/Chen et al. - 2008 - Algorithm 887 CHOLMOD, Supernodal Sparse Cholesky Factorization and UpdateDowndate.pdf:application/pdf},
+	journal = {ACM Transactions on Mathematical Software},
+	author = {Chen, Yanqing and Davis, Timothy A. and Hager, William W. and Rajamanickam, Sivasankaran},
+	month = oct,
+	year = {2008},
+	pages = {1--14},
 }
 
-@online{supernodal_chol_eigen,
-	title = {Eigen: Eigen::{CholmodSupernodalLLT}{\textless} {MatrixType}\_, {UpLo}\_ {\textgreater} Class Template Reference},
+@misc{supernodal_chol_eigen,
+	title = {Eigen::CholmodSupernodalLLT Class Template Reference},
 	url = {https://libeigen.gitlab.io/eigen/docs-5.0/classEigen_1_1CholmodSupernodalLLT.html},
 	urldate = {2026-05-15},
-	file = {Eigen\: Eigen\:\:CholmodSupernodalLLT< MatrixType_, UpLo_ > Class Template Reference:/home/daniele/Zotero/storage/HUDN2BVM/classEigen_1_1CholmodSupernodalLLT.html:text/html},
+}
+
+@misc{eigen_simpicial_llt,
+	title = {Eigen::SimplicialLLT Class Template Reference},
+	url = {https://libeigen.gitlab.io/eigen/docs-nightly/classEigen_1_1SimplicialLLT.html},
+	urldate = {2026-05-16},
+}
+
+@misc{cholmod_github,
+	title = {{SuiteSparse}/{CHOLMOD} at dev · {DrTimothyAldenDavis}/{SuiteSparse}},
+	url = {https://github.com/DrTimothyAldenDavis/SuiteSparse/tree/dev/CHOLMOD},
+	abstract = {The official SuiteSparse library: a suite of sparse matrix algorithms authored or co-authored by Tim Davis, Texas A\&M University. No AI generated code - DrTimothyAldenDavis/SuiteSparse},
+	language = {en},
+	urldate = {2026-05-16},
+	journal = {GitHub},
+	author = {{DrTimothyAldenDavis}},
+	file = {Snapshot:files/28/CHOLMOD.html:text/html},
+}
+
+@misc{blas_doc,
+	title = {{BLAS} ({Basic} {Linear} {Algebra} {Subprograms})},
+	url = {https://www.netlib.org/blas/},
+	urldate = {2026-05-16},
+	file = {BLAS (Basic Linear Algebra Subprograms):files/30/blas.html:text/html},
+}
+
+@misc{lapack_doc,
+	title = {{LAPACK}-{Linear} {Algebra} {PACKage}},
+	url = {https://www.netlib.org/lapack/},
+	urldate = {2026-05-16},
+	file = {LAPACK-Linear Algebra PACKage:files/32/lapack.html:text/html},
+}
+
+
+@misc{cholmod_doc,
+	title = {CHOLMOD User guide},
+	url = {https://github.com/DrTimothyAldenDavis/SuiteSparse/blob/dev/CHOLMOD/Doc/CHOLMOD_UserGuide.pdf},
+	urldate = {2026-05-17},
+	author = {Davis, Tim},
+	month = {July},
+	year = {2025},
 }
