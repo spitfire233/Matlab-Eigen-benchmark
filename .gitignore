@@ -569,3 +569,13 @@ matlab/*.txt
 
 profilers/mem.txt
 profilers/mem_*.txt
+
+*.aux
+*.bbl
+*.blg
+*.bcf
+*.run.xml
+*.out
+*.synctex.gz
+*.synctex.*
+*.toc
