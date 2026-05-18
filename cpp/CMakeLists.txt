@@ -83,18 +83,33 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(fast_matrix_market) # Download and make dependency available
 
 find_package(Eigen3 REQUIRED) # Locate Eigen3 library
-if (MSVC)
-    find_package(OpenBLAS REQUIRED) # Locate OpenBLAS library
-    find_package(SuiteSparse CONFIG REQUIRED) # Locate SuiteSparse package
-else ()
-    find_package(BLAS REQUIRED)
+find_package(BLAS REQUIRED) # Locate BLAS package
+find_package(OpenMP REQUIRED) # Locate OpenMP support
+message(STATUS "BLAS libraries: ${BLAS_LIBRARIES}") # Debug message to check where CMake got the BLAS impl.
 
-    message(STATUS "BLAS libraries: ${BLAS_LIBRARIES}")
+add_executable(${PROJECT_NAME} "main.cpp" utils/utils.hpp) # Create executable target
 
-    find_path(SUITESPARSE_INCLUDE_DIR cholmod.h
+if (MSVC) # If we are using a Windows Visual Studio Compiler (We are on windows)
+    message("Using MSVC")
+    find_package(SuiteSparse CONFIG REQUIRED) # Locate locally compiled SuiteSparse package
+    # /arch: AVX2: Enable Intel Advanced Vector Extensions 2 to improve performance
+    # /openmp: Enable multithreading by linking OpenMP
+    target_compile_options(${PROJECT_NAME} PRIVATE /arch:AVX2 /openmp)
+    target_link_libraries(${PROJECT_NAME} PRIVATE # Link libraries
+            ${SuiteSparse_LIBRARIES}
+            Eigen3::Eigen # Link Eigen library
+            SuiteSparse::cholmod # Link CHOLMOD sparse matrix library
+            fast_matrix_market::fast_matrix_market # Link fast matrix market parser
+            OpenBLAS::OpenBLAS # Link OpenBLAS implementation
+            OpenMP::OpenMP_CXX # Link OpenMP C++ support
+    )
+else () # We are using another compiler (MacOS, Windows not with MVSC or Linux)
+    message("Not using MSVC")
+
+    find_path(SUITESPARSE_INCLUDE_DIR cholmod.h # Find the path of CHOLMOD withn SuiteSparse
             PATHS /usr/include/suitesparse
     )
-
+    # Find CHOLMOD and its dependencies
     find_library(CHOLMOD_LIBRARY cholmod)
     find_library(AMD_LIBRARY amd)
     find_library(COLAMD_LIBRARY colamd)
@@ -102,53 +117,22 @@ else ()
     find_library(CCOLAMD_LIBRARY ccolamd)
     find_library(SUITESPARSECONFIG_LIBRARY suitesparseconfig)
 
-    if(NOT CHOLMOD_LIBRARY)
+    if(NOT CHOLMOD_LIBRARY) # Fail if CHOLMOD was not found
         message(FATAL_ERROR "CHOLMOD not found")
     endif()
-endif ()
-find_package(OpenMP REQUIRED) # Locate OpenMP support
-add_executable(${PROJECT_NAME} "main.cpp" utils/utils.hpp) # Create executable target
-
-# Enable High-Level optimization and vectorization
-if (MSVC) # If we are using a Visual Studio C++ compiler
-    # /O2: Optimize for speed
-    # /arch: AVX2: Enable Intel Advanced Vector Extensions 2 to improve performance
-    message("Using a MSVC") # Print compiler information
-    target_compile_options(${PROJECT_NAME} PRIVATE /arch:AVX2 /openmp) # Enable AVX2 and OpenMP for MSVC
-else () # If we are on any other OS or not using a Microsoft Visual Studio C++ compiler
-    # -O3: Aggressive optimization
+    # -O2: Optimization for speed
     # -march=native Enables all instruction sets supported by the CPU
-    # -DNDEBUG: Removes assertion macro to improve performance
-    # -fopenmp: OpenBLAS is often compiled with multi-threading support
-    message("Not using a MSVC") # Print compiler information
-    target_compile_options(${PROJECT_NAME} PRIVATE -O3 -march=native -DNDEBUG -fopenmp) # Enable aggressive optimizations
+    # -DNDEBUG: Removes assertion macro to improve performance (oracles)
+    # -fopenmp: link openMP to enable multithreading
+    target_compile_options(${PROJECT_NAME} PRIVATE -O2 -march=native -DNDEBUG -fopenmp)
     target_link_options(${PROJECT_NAME} PRIVATE -fopenmp) # Link against OpenMP runtime
-endif ()
 
-# Disables Eigen's internal range checks and assertions
-target_compile_definitions(${PROJECT_NAME} PRIVATE
-        PROJECT_ROOT_DIR=\"${PROJECT_ROOT_DIR}\" # Expose project root path as a macro
-        PROFILERS_DIR=\"${PROFILERS_DIR}\" # Expose profilers directory path as a macro
-        MATRICES_DIR=\"${MATRICES_DIR}\" # Expose matrices directory path as a macro
-        EIGEN_NO_DEBUG # Disable Eigen debug checks
-        EIGEN_USE_BLAS # Enable BLAS backend in Eigen
-        EIGEN_USE_LAPACKE # Enable LAPACKE backend in Eigen
-)
-
-if (MSVC)
-    target_link_libraries(${PROJECT_NAME} PRIVATE ${SuiteSparse_LIBRARIES}) # Link SuiteSparse libraries
-    target_link_libraries(${PROJECT_NAME} PRIVATE
-            Eigen3::Eigen # Link Eigen library
-            SuiteSparse::cholmod # Link CHOLMOD sparse matrix library
-            fast_matrix_market::fast_matrix_market # Link fast matrix market parser
-            OpenBLAS::OpenBLAS # Link OpenBLAS implementation
-            OpenMP::OpenMP_CXX # Link OpenMP C++ support
-    )
-else ()
+    # Include SuiteSparse package
     target_include_directories(${PROJECT_NAME} PRIVATE
             ${SUITESPARSE_INCLUDE_DIR}
     )
 
+    # Link libraries to the project
     target_link_libraries(${PROJECT_NAME} PRIVATE
             Eigen3::Eigen
             fast_matrix_market::fast_matrix_market
@@ -161,6 +145,14 @@ else ()
             ${CCOLAMD_LIBRARY}
             ${SUITESPARSECONFIG_LIBRARY}
     )
-endif ()
-
-
+endif()
+# Disables Eigen's internal range checks and assertions and provide folders paths as linker definiton so that
+# they can be used withn the program
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+        PROJECT_ROOT_DIR=\"${PROJECT_ROOT_DIR}\" # Expose project root path as a macro
+        PROFILERS_DIR=\"${PROFILERS_DIR}\" # Expose profilers directory path as a macro
+        MATRICES_DIR=\"${MATRICES_DIR}\" # Expose matrices directory path as a macro
+        EIGEN_NO_DEBUG # Disable Eigen debug checks
+        EIGEN_USE_BLAS # Enable BLAS backend in Eigen
+        EIGEN_USE_LAPACKE # Enable LAPACKE backend in Eigen
+)
