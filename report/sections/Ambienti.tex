@@ -18,6 +18,28 @@ Per la risoluzione dei sistemi di equazioni è stato utilizzato il comando \text
 Questa libreria viene mantenuta e aggiornata regolarmente da MathWorks, ottimizzando i metodi di risoluzione per alcuni tipi di matrici	e migliorando le prestazioni complessive.
 La documentazione ufficiale di Matlab fornisce i dettagli sulla selezione del metodo di risoluzione in base alle caratteristiche della matrice, dividendo in due macro categorie: matrici dense e matrici sparse.
 In particolare, in figura~\ref{fig:mldivide_sparse} possiamo vedere il processo di selezione del metodo di risoluzione per matrici sparse, che è quello che abbiamo utilizzato per i nostri benchmark.
+\subsection{Gestione della memoria di swap}
+Quando un processo finisce la memoria fisica (RAM) disponibile, il sistema operativo trasferisce temporaneamente parte della memoria allocata per quel processo su un
+supporto di memoria secondario, come un disco rigido o un'unita SSD.
+Le parti di memoria trasferite su disco vengono successivamente riportate in RAM quando il processo ne richiede l'utilizzo.
+Questo meccanismo, che prende il nome di \textbf{swapping}, permette al sistema operativo di eseguire più processi anche quando la quantità di memoria fisica libera è limitata.
+Tendenzialmente, la memoria trasferita durante lo swapping viene salvata o in file sul disco, chiamati comunemente \textbf{file di swap} (o file di paging su Windows), oppure in partizioni
+sul disco dedicate. 
+Tuttavia, questa operazione comporta un peggioramento delle performance, dato che l'accesso ai dati su disco è estremamente più lento rispetto ad un accesso diretto alla RAM.
+Durante l'esecuzione del programma Matlab su entrambi i sistemi operativi, abbiamo riscontrato che esso era oggetto di swapping da parte di quest'ultimi durante la computazione delle matrici di dimensione
+maggiore. Per gestire questa problematica e mitigarne gli effetti sulle performance, abbiamo adottato le seguenti soluzioni:
+\begin{itemize}
+	\item \textbf{Windows}: Windows gestisce autonomamente il proprio file di swap; quindi non sono state necessarie ulteriori azioni
+	\item \textbf{Linux Fedora}: Fedora (e altre distribuzioni Linux) oltre al classico meccanismo di swap, utilizza un particolare sistema di swap chiamato \textbf{zram}. 
+	Questo sistema prevede l'allocazione dinamica di un "disco" compresso direttamente nella memoria RAM del sistema, permettendo quindi di effettuare lo swap più velocemente rispetto ad un swap effettuato su memoria secondaria.
+	Essendo allocato in RAM, tuttavia, la sua dimensione non può essere troppo elevata. L'approccio utilizzato su Fedora è quindi stato il seguente:
+	\begin{itemize}
+		\item \textbf{zram}: La documentazione di Fedora \cite{fedora_swap_on_zram} raccomanda di allocare una dimensione di zram pari al $50\%$ della memoria RAM del sistema. Abbiamo quindi impostato
+		una grandezza pari a $16$ GB.
+		\item \textbf{File di swap}: Poiché Matlab, durante la computazione delle matrici più grandi, alloca ben oltre $16$ GB di RAM, abbiamo allocato un ulteriore file di swap su disco, con un grandezza di $32$ GB,
+		così che esso possa essere utilizzato quando la memoria in zram termina.
+	\end{itemize}
+\end{itemize}
 \section{C++}
 Lo sviluppo del programma in C++ ha richiesto l'utilizzo di diverse librerie, con l'obiettivo di garantire un confronto equo 
 con il programma sviluppato per Matlab. 
@@ -38,14 +60,12 @@ sul funzionamento interno della libreria e sulla sua integrazione con altre tecn
 \texttt{CHOLMOD} è una libreria, facente parte del pacchetto \texttt{SuiteSparse}, che permette di svolgere efficientemente diverse operazioni su matrici sparse.
 In particolare, la libreria offre funzioni per la fattorizzazione di matrici sparse, simmetriche e definite positive
 tramite il metodo di Cholesky e per la risoluzione di sistemi lineari. La libreria è scritta nel linguaggio di programmazione C.
-Sia $A$ una matrice sparsa, simmetrica e definita positiva; allora la sua decomposizione ottenuta usando il metodo di Cholesky è $A = LL^T$,
-con $L$ una matrice triangolare inferiore. 
 \texttt{CHOLMOD} implementa due tipi di risolutori di sistemi di equazioni lineari sparsi che sfruttano questa decomposizione:
 uno \textbf{supernodale} e uno \textbf{non-supernodale} \cite{chen_algorithm_2008}.
 In particolare, abbiamo scelto di utilizzare l'implementazione \textbf{supernodale} dell'algoritmo di risoluzione, il quale è accessibile in Eigen costruendo un risolutore della classe \texttt{CholmodSupernodalLLT}\cite{supernodal_chol_eigen}.
 Gli algoritmi supernodali si basano sulla decomposizione della matrice $A$ in termini di blocchi di colonne, chiamati \textbf{supernodi}. L'algoritmo implementato da CHOLMOD è composto da tre fasi di calcolo principali:
 \begin{enumerate}
-	\item La prima analizza la struttura della matrice e riordina le righe e le colonne per minimizzare il fill-in, ovvero l'introduzione di elementi non-nulli in $L$ che non compaiono nella posizione corrispondente in $A$.
+	\item La prima analizza la struttura della matrice e riordina le righe e le colonne per minimizzare il fill-in, ovvero l'introduzione di elementi non-nulli in $L$ che non compaiono nella posizione corrispondente in $A$, dove $L$ è la matrice triangolare inferiore ottenuta dalla decomposizione di Cholesky $A = LL^T$.
 	Il riordinamento della matrice è un'importante fattore di performance, dato che con meno valori non nulli il numero di operazioni necessario e il peso in memoria diminuisce.
 	\item La seconda fase fattorizza la matrice applicando operazioni sui supernodi
 	\item La terza risolve due sistemi triangolari di equazioni: $Ly = b$ e $L^T x = y$ nel caso della fattorizzazione di Cholesky.
@@ -75,22 +95,7 @@ Questo formato prevede due tipi diversi di rappresentazione per le matrici:
 	\item \textbf{Formato a Coordinate}: Questo formato è adatto per rappresentare generiche matrici sparse. Vengono fornite solamente le entrate non nulle e le loro coordinate all'interno della matrice.
 	\item \textbf{Formato ad array}: Questo formato è adatto per rappresentare generiche matrici dense. Vengono fornite tutte le entrate, elencate per colonne.
 \end{itemize}
-Un file in formato Matrix Market è composto da 4 parti \cite{noauthor_matrix_nodate}:
-\begin{enumerate}
-	\item \textbf{Header Line}: contiene un identificatore e quattro campi testuali.
-	L'header deve essere la prima riga del file e può avere la forma \texttt{\%MatrixMarket object format field symmetry} oppure la forma \texttt{\%\%MatrixMarket object format field symmetry}.
-	I quattro campi testuali che seguono la prima stringa possono avere i seguenti valori:
-	\begin{itemize}
-		\item \textbf{object}: il tipo di oggetto rappresentato; può avere valore \texttt{matrix}, per le matrici, oppure \texttt{vector}, per i vettori
-		\item \textbf{format}: il tipo di rappresentazione contenuta nel file, può avere valore \texttt{coordinate} oppure \texttt{array}
-		\item \textbf{field}: il tipo di entrate della matrice, può assumere i valori \texttt{integer, real, double, complex} o \texttt{pattern}. Nel caso di quest'ultimo valore, nel file verranno indicate solamente le coordinate delle entrate non nulle, senza il loro valore.
-		\item \textbf{symmetry}: il tipo di simmetria della matrice, può avere i valori \texttt{general} (utilizzabile per i valori \texttt{real, complex, integer} o \texttt{pattern} di field), \texttt{symmetric} (\texttt{real, complex, integer} o \texttt{pattern}), \texttt{skew-symmetric} (\texttt{real, complex, integer}) o \texttt{hermitian} (\texttt{complex})
-	\end{itemize}
-	\item \textbf{Comment lines}: permette al creatore del file di inserire commenti
-	\item \textbf{Size line}: indica il numero di righe e colonne della matrice, nonché il numero di entrate non nulle
-	\item \textbf{Data lines}: specifica la posizione delle entrate della matrice e il loro valore
-\end{enumerate}
-Per permette un caricamento rapido delle matrici in questo formato, si è deciso di utilizzare la libreria open source \texttt{fast\_matrix\_market}\cite{lugowski_fast_matrix_market_2023},
+Per permettere un caricamento rapido delle matrici in questo formato, si è deciso di utilizzare la libreria open source \texttt{fast\_matrix\_market}\cite{lugowski_fast_matrix_market_2023},
 la quale mette a disposizione un modulo veloce e parallelizzato per caricare le matrici sparse direttamente nei tipi di oggetti definiti da \texttt{Eigen}.
 \texttt{fast\_matrix\_market} non è più attivamente sviluppato (l'ultima commit al progetto risale a 2 anni prima della stesura di questo report).
 Inoltre, la libreria non dispone di una documentazione ufficiale, preferendo invece l'utilizzo di brevi file README che descrivono le funzionalità disponibili, le scelte implementative adottate e alcuni esempi d’uso per sfruttarne al meglio le funzionalità.
@@ -111,14 +116,8 @@ le seguenti operazioni da svolgere ogni volta che il progetto viene compilato:
 CMake è un software costantemente aggiornato e supportato da una documentazione completa e ben strutturata. 
 La documentazione mette a disposizione sia guide introduttive per familiarizzare con lo strumento, 
 sia sezioni di riferimento dettagliate per tutti i comandi offerti.
-\section{Windows}
-
-
-
-
-\section{Linux}
-
-
+\subsection{Installazione su Windows}
+\subsection{Installazione su Linux}
 
 
 
