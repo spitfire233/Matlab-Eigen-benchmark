@@ -69,7 +69,7 @@ results_linux_c = CSVToStruct('linux_results.csv');
 
 % ---- Time ----
 f4 = figure;
-semilogy(results_linux_c.sizes, results_linux_c.times, '-results_linux_c', 'LineWidth', 1.5);
+semilogy(results_linux_c.sizes, results_linux_c.times, '-s', 'LineWidth', 1.5);
 xlabel('Matrix size (n)');
 ylabel('Solve time (results_linux_c)');
 title('C++: Time vs size');
@@ -78,7 +78,7 @@ saveas(f4, fullfile(cpp_dir_linux, 'time_vs_size.png'));
 
 % ---- Memory ----
 f5 = figure;
-semilogy(results_linux_c.sizes, results_linux_c.mem_rss, '-results_linux_c', 'LineWidth', 1.5);
+semilogy(results_linux_c.sizes, results_linux_c.mem_rss, '-s', 'LineWidth', 1.5);
 xlabel('Matrix size (n)');
 ylabel('Memory RSS (MB)');
 title('C++: Memory vs size');
@@ -87,7 +87,7 @@ saveas(f5, fullfile(cpp_dir_linux, 'rss_vs_size.png'));
 
 % ---- Error ----
 f6 = figure;
-semilogy(results_linux_c.sizes, results_linux_c.relerr, '-results_linux_c', 'LineWidth', 1.5);
+semilogy(results_linux_c.sizes, results_linux_c.relerr, '-s', 'LineWidth', 1.5);
 xlabel('Matrix size (n)');
 ylabel('Relative error');
 title('C++: Relative error vs size');
@@ -102,7 +102,7 @@ saveas(f6, fullfile(cpp_dir_linux, 'relative_error_vs_size.png'));
 f7 = figure;
 semilogy(results_linux_matlab.n, results_linux_matlab.time, '-o', 'LineWidth', 1.5);
 hold on
-plot(results_linux_c.sizes, results_linux_c.times, '-results_linux_c', 'LineWidth', 1.5);
+plot(results_linux_c.sizes, results_linux_c.times, '-s', 'LineWidth', 1.5);
 hold off
 xlabel('Matrix size (n)');
 ylabel('Solve time (results_linux_c)');
@@ -115,7 +115,7 @@ saveas(f7, fullfile(cmp_dir_linux, 'time_comparison.png'));
 f8 = figure;
 semilogy(results_linux_matlab.n, results_linux_matlab.peak_MB, '-o', 'LineWidth', 1.5);
 hold on
-semilogy(results_linux_c.sizes, results_linux_c.mem_rss, '-results_linux_c', 'LineWidth', 1.5);
+semilogy(results_linux_c.sizes, results_linux_c.mem_rss, '-s', 'LineWidth', 1.5);
 hold off
 xlabel('Matrix size (n)');
 ylabel('Memory RSS (MB)');
@@ -128,7 +128,7 @@ saveas(f8, fullfile(cmp_dir_linux, 'memory_comparison.png'));
 f9 = figure;
 semilogy(results_linux_matlab.n, results_linux_matlab.relerr, '-o', 'LineWidth', 1.5);
 hold on
-semilogy(results_linux_c.sizes, results_linux_c.relerr, '-results_linux_c', 'LineWidth', 1.5);
+semilogy(results_linux_c.sizes, results_linux_c.relerr, '-s', 'LineWidth', 1.5);
 hold off
 xlabel('Matrix size (n)');
 ylabel('Relative error');
@@ -184,7 +184,7 @@ results_windows_c = CSVToStruct('windows_results.csv');
 
 % ---- Time ----
 f13 = figure;
-semilogy(results_windows_c.sizes, results_windows_c.times, '-results_windows_c', 'LineWidth', 1.5);
+semilogy(results_windows_c.sizes, results_windows_c.times, '-s', 'LineWidth', 1.5);
 xlabel('Matrix size (n)');
 ylabel('Solve time (results_windows_c)');
 title('C++: Time vs size');
@@ -193,7 +193,7 @@ saveas(13, fullfile(cpp_dir_windows, 'time_vs_size.png'));
 
 % ---- Memory ----
 f14 = figure;
-semilogy(results_windows_c.sizes, results_windows_c.mem_rss, '-results_windows_c', 'LineWidth', 1.5);
+semilogy(results_windows_c.sizes, results_windows_c.mem_rss, '-s', 'LineWidth', 1.5);
 xlabel('Matrix size (n)');
 ylabel('Memory RSS (MB)');
 title('C++: Memory vs size');
@@ -202,7 +202,7 @@ saveas(f14, fullfile(cpp_dir_windows, 'rss_vs_size.png'));
 
 % ---- Error ----
 f15 = figure;
-semilogy(results_windows_c.sizes, results_windows_c.relerr, '-results_windows_c', 'LineWidth', 1.5);
+semilogy(results_windows_c.sizes, results_windows_c.relerr, '-s', 'LineWidth', 1.5);
 xlabel('Matrix size (n)');
 ylabel('Relative error');
 title('C++: Relative error vs size');
@@ -217,7 +217,7 @@ saveas(f15, fullfile(cpp_dir_windows, 'relative_error_vs_size.png'));
 f16 = figure;
 semilogy(results_windows_matlab.n, results_windows_matlab.time, '-o', 'LineWidth', 1.5);
 hold on
-plot(results_windows_c.sizes, results_windows_c.times, '-results_windows_c', 'LineWidth', 1.5);
+plot(results_windows_c.sizes, results_windows_c.times, '-s', 'LineWidth', 1.5);
 hold off
 xlabel('Matrix size (n)');
 ylabel('Solve time (results_windows_c)');
@@ -230,7 +230,7 @@ saveas(f16, fullfile(cmp_dir_windows, 'time_comparison.png'));
 f17 = figure;
 semilogy(results_windows_matlab.n, results_windows_matlab.peak_MB, '-o', 'LineWidth', 1.5);
 hold on
-semilogy(results_windows_c.sizes, results_windows_c.mem_rss, '-results_windows_c', 'LineWidth', 1.5);
+semilogy(results_windows_c.sizes, results_windows_c.mem_rss, '-s', 'LineWidth', 1.5);
 hold off
 xlabel('Matrix size (n)');
 ylabel('Memory RSS (MB)');
@@ -243,7 +243,7 @@ saveas(f17, fullfile(cmp_dir_windows, 'memory_comparison.png'));
 f18 = figure;
 semilogy(results_windows_matlab.n, results_windows_matlab.relerr, '-o', 'LineWidth', 1.5);
 hold on
-semilogy(results_windows_c.sizes, results_windows_c.relerr, '-results_windows_c', 'LineWidth', 1.5);
+semilogy(results_windows_c.sizes, results_windows_c.relerr, '-s', 'LineWidth', 1.5);
 hold off
 xlabel('Matrix size (n)');
 ylabel('Relative error');
@@ -260,11 +260,11 @@ saveas(f18, fullfile(cmp_dir_windows, 'relative_error_comparison.png'));
 f16 = figure;
 semilogy(results_windows_matlab.n, results_windows_matlab.time, '-o', 'LineWidth', 1.5);
 hold on
-semilogy(results_windows_c.sizes, results_windows_c.times, '-results_windows_c', 'LineWidth', 1.5);
+semilogy(results_windows_c.sizes, results_windows_c.times, '-s', 'LineWidth', 1.5);
 hold on
 semilogy(results_linux_matlab.n, results_linux_matlab.time, '-o', 'LineWidth', 1.5);
 hold on
-plot(results_linux_c.sizes, results_linux_c.times, '-results_linux_c', 'LineWidth', 1.5);
+plot(results_linux_c.sizes, results_linux_c.times, '-s', 'LineWidth', 1.5);
 hold off
 xlabel('Matrix size (n)');
 ylabel('Solve time ');
@@ -277,11 +277,11 @@ saveas(f16, fullfile(cmp_dir_complete, 'time_comparison.png'));
 f17 = figure;
 semilogy(results_windows_matlab.n, results_windows_matlab.peak_MB, '-o', 'LineWidth', 1.5);
 hold on
-semilogy(results_windows_c.sizes, results_windows_c.mem_rss, '-results_windows_c', 'LineWidth', 1.5);
+semilogy(results_windows_c.sizes, results_windows_c.mem_rss, '-s', 'LineWidth', 1.5);
 hold on
 semilogy(results_linux_matlab.n, results_linux_matlab.peak_MB, '-o', 'LineWidth', 1.5);
 hold on
-semilogy(results_linux_c.sizes, results_linux_c.mem_rss, '-results_linux_c', 'LineWidth', 1.5);
+semilogy(results_linux_c.sizes, results_linux_c.mem_rss, '-s', 'LineWidth', 1.5);
 
 hold off
 xlabel('Matrix size (n)');
@@ -295,11 +295,11 @@ saveas(f17, fullfile(cmp_dir_complete, 'memory_comparison.png'));
 f18 = figure;
 semilogy(results_windows_matlab.n, results_windows_matlab.relerr, '-o', 'LineWidth', 1.5);
 hold on
-semilogy(results_windows_c.sizes, results_windows_c.relerr, '-results_windows_c', 'LineWidth', 1.5);
+semilogy(results_windows_c.sizes, results_windows_c.relerr, '-s', 'LineWidth', 1.5);
 hold on
 semilogy(results_linux_matlab.n, results_linux_matlab.relerr, '-o', 'LineWidth', 1.5);
 hold on
-semilogy(results_linux_c.sizes, results_linux_c.relerr, '-results_linux_c', 'LineWidth', 1.5);
+semilogy(results_linux_c.sizes, results_linux_c.relerr, '-s', 'LineWidth', 1.5);
 hold off
 xlabel('Matrix size (n)');
 ylabel('Relative error');
