@@ -1,0 +1,32 @@
+\section{Modalità di misurazione}
+Per effettuare le misurazioni sul tempo di risoluzione del sistema, abbiamo utilizzato le funzionalità offerte nativamente dai
+rispettivi linguaggi:
+\begin{itemize}
+    \item \textbf{Matlab}: abbiamo utilizzato i comandi \texttt{tic} e \texttt{toc} per rispettivamente far partire il timer
+    e fermarlo.
+    \item \textbf{C++}: per effettuare la misurazione, il programma C++ calcola la differenza di tempo da poco dopo aver letto la matrice in memoria
+    a subito dopo la risoluzione del sistema. Per ottenere i due istanti di tempo necessari al calcolo, abbiamo utilizzato la funzione \texttt{std::chrono::high\_resolution\_clock::now()}
+    della libreria \texttt{chrono} del linguaggio.
+\end{itemize}
+
+\lstinputlisting[
+    language=C++,
+    style = Cpp-editor,
+    firstline = 105,
+    lastline = 133,
+    firstnumber = 105,
+    caption = Porzione del codice C++ in cui si calcola il tempo di esecuzione
+]{../cpp/utils/utils.hpp}
+\clearpage
+\lstinputlisting[
+    style=Matlab-editor,
+    firstline=66,
+    lastline=72,
+    firstnumber=66,
+    caption = Porzione del codice Matlab in cui si calcola il tempo di esecuzione
+]{../matlab/main.m}
+\section{Risultati}
+
+
+
+

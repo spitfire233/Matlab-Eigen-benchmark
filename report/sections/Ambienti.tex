@@ -118,8 +118,7 @@ La documentazione mette a disposizione sia guide introduttive per familiarizzare
 sia sezioni di riferimento dettagliate per tutti i comandi offerti.
 \subsection{Installazione e compilazione su Windows}
 Per l'esecuzione e la gestione dello sviluppo del programma su piattaforma Windows, abbiamo deciso di utilizzare
-l'Integrated Development Environment (IDE) \textbf{Visual Studio 2026}; il quale viene distribuito insieme
-al compilatore per C/C++ \textbf{Microsoft Visual C++} (MSVC) e ad una serie di tool utili per lo sviluppo. 
+\textbf{Visual Studio 2026}; il quale viene distribuito insieme al compilatore per C/C++ \textbf{Microsoft Visual C++} (MSVC) e ad una serie di tool utili per lo sviluppo. 
 In particolare, il \textbf{Windows Software Development Kit} (SDK) \cite{microsoft_windows_sdk} mette a disposizione un insieme di librerie per lo sviluppo
 di applicazioni su piattaforma Windows; tra cui le librerie \texttt{windows.h}, la quale contiene tutte le dichiarazioni e definizioni necessarie
 ad utilizzare le librerie offerte dall'SDK, e \texttt{Psapi.h} (Process status API) \cite{microsoft_psapi}, le cui funzioni permettono di accedere alle informazioni relative
@@ -145,12 +144,12 @@ Durante il processo di compilazione, abbiamo indicato a MSVC di utilizzare le se
 	\item \texttt{/openmp}: Abilita l'utilizzo di \texttt{OpenMP} per il programma
 \end{itemize}
 \subsection{Installazione e compilazione su Linux}
-Per l'esecuzione e la gestione dello sviluppo del programma su Linux Fedora, abbiamo deciso di utilizzare l'IDE \textbf{CLion}, sviluppato
+Per l'esecuzione e la gestione dello sviluppo del programma su Linux Fedora, abbiamo deciso di utilizzare \textbf{CLion}, sviluppato
 da JetBrains. Abbiamo inoltre deciso di utilizzare il compilatore \textbf{g++}, sviluppato dal progetto \textbf{GNU} e disponibile in tutte le
 principali distribuzioni Linux.
 \subsubsection{Installazione delle librerie}
 Tutte le librerie necessarie ad eseguire il progetto sono state facilmente reperibili utilizzando il package manager di Fedora
-\textbf{Dandified Yum} (dnf). In particolare, la documentazione di \texttt{OpenBLAS} \cite{openblas_installation} indica di utilizzare congiuntamente ad essa, su Fedora,
+\textbf{dnf}. In particolare, la documentazione di \texttt{OpenBLAS} \cite{openblas_installation} indica di utilizzare congiuntamente ad essa, su Fedora,
 la libreria wrapper \texttt{FlexiBLAS}\cite{flexiblas}, la quale permette di cambiare facilmente l'implementazione di \texttt{BLAS} che si vuole utilizzare.
 L'abilitazione del multithreading, quindi, ha richiesto solamente di indicare a \texttt{FlexiBLAS} di utilizzare l'implementazione fornita da \texttt{OpenBLAS} con \texttt{OpenMP}.
 \subsubsection{Flag di ottimizzazione}
@@ -158,10 +157,10 @@ Come per MSVC, durante il processo di compilazione abbiamo indicato a g++ di uti
 \begin{itemize}
 	\item \texttt{-O2}: Indica al compilatore di effettuare tutte le operazioni di ottimizzazione disponibili, tranne quelle che implicano un compromesso tra spazio e velocità \cite{gcc_O2}.
 	\item \texttt{-march=native}: Indica al compilatore di ottimizzare il codice generato per l'architettura della CPU corrente \cite{gcc_aarch64_march_mcpu}
-	\item \texttt{-DNDEBUG}: Indica al compilatore di disattivare le asserzioni interne alle librerie del programma, in modo da aumentarne le performance. Questa flag è in realtà formata da due flag distinte:
+	\item \texttt{-DNDEBUG}: Indica al compilatore di disattivare le asserzioni interne alle librerie del programma, in modo da aumentarne le performance. Questa flag è in realtà formata da due parti:
 	\begin{itemize}
 		\item \texttt{-D}: Indica al compilatore la definizione di una macro \cite{gcc_preprocessor_D}
-		\item \texttt{-NDEBUG}: Indica la disattivazione delle asserzioni \cite{cpp_assert}
+		\item \texttt{NDEBUG}: Indica la disattivazione delle asserzioni \cite{cpp_assert}
 	\end{itemize}
 	\item \texttt{-fopenmp}: Abilita l'utilizzo di \texttt{OpenMP} per il programma
 \end{itemize}

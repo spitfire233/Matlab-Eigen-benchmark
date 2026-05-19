@@ -1,4 +1,6 @@
 \documentclass{report}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc} % if using pdflatex
 \usepackage{csquotes}
 \usepackage{float}
 \usepackage{graphicx}
@@ -12,6 +14,73 @@ sorting=none,
 ]{biblatex}
 \usepackage{xcolor}
 \usepackage{listings}
+\usepackage{matlab-prettifier}
+
+\definecolor{codebg}{RGB}{245,245,244}
+\definecolor{codegray}{RGB}{110,110,110}
+\definecolor{codegreen}{RGB}{0,120,0}
+\definecolor{codeblue}{RGB}{0,0,180}
+\definecolor{codeorange}{RGB}{180,90,0}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95, 0.92}
+
+\lstdefinestyle{Matlab-editor}{
+    language=Matlab,
+    backgroundcolor=\color{codebg},
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{codeblue}\bfseries,
+    commentstyle=\color{codegreen}\itshape,
+    stringstyle=\color{codeorange},
+    numberstyle=\tiny \color{black},
+    numbers=left,
+    stepnumber=1,
+    numbersep=10pt,
+    frame=single,
+    rulecolor=\color{black!20},
+    tabsize=4,
+    showspaces=false,
+    showstringspaces=false,
+    breaklines=true,
+    breakatwhitespace=true,
+    columns=fullflexible,
+    keepspaces=true,
+    captionpos=b
+}
+
+\lstdefinestyle{Cpp-editor}{
+    language=C++,
+    backgroundcolor=\color{codebg},
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{codeblue}\bfseries,
+    commentstyle=\color{codegreen}\itshape,
+    stringstyle=\color{codeorange},
+    numbers=left,
+    numberstyle=\tiny\color{black},
+    stepnumber=1,
+    numbersep=10pt,
+    frame=single,
+    rulecolor=\color{black!20},
+    tabsize=4,
+    showspaces=false,
+    showstringspaces=false,
+    breaklines=true,
+    breakatwhitespace=true,
+    columns=fullflexible,
+    keepspaces=true,
+    captionpos=b,
+    % Extra C++ highlighting
+    morekeywords={
+        constexpr,nullptr,std,vector,string,map,
+        unordered_map,auto,cout,cin,endl
+    },
+    % Better handling of UTF-8 chars
+    extendedchars=true,
+    % Preserve indentation
+    keepspaces=true
+}
 
 % Define CMake language
 \lstdefinelanguage{CMake}{
