@@ -82,7 +82,7 @@ inline void write_to_csv_file(const benchmark_results& result) {
 }
 
 // Function to calculate the benchmark results for a matrix in .mtx format
-inline benchmark_results calulate_benchmark(const std::string& matrix_file, const int pid, const std::string mem_file) {
+inline benchmark_results calculate_benchmark(const std::string& matrix_file, const int pid, const std::string& mem_file) {
     
     // Prepare struct to hold results
     benchmark_results benchmark_results;
@@ -93,9 +93,6 @@ inline benchmark_results calulate_benchmark(const std::string& matrix_file, cons
     // Start the memory profiler
     start_sampler(pid, mem_file);
 
-    // Start the timer to measure total resolve time
-    auto start = std::chrono::high_resolution_clock::now();
-
     // Create file input (reading) stream (ifstream)
     std::ifstream stream(matrix_file);
 
@@ -105,8 +102,11 @@ inline benchmark_results calulate_benchmark(const std::string& matrix_file, cons
     // Close the stream
     stream.close();
 
+    // Start the timer to measure total resolve time
+    auto start = std::chrono::high_resolution_clock::now();
+
     // Get current resident set size after reading the matrix
-    const double mem_after_reading = get_current_rss_mb();
+    const double mem_after_reading = get_current_memory_usage();
 
     // Create xe vector of ones
     Eigen::VectorXd xe = Eigen::VectorXd::Ones(A.rows());

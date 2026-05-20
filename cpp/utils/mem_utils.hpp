@@ -19,7 +19,7 @@ inline int get_pid() {
 #endif
 }
 
-inline double get_current_rss_mb() {
+inline double get_current_memory_usage() {
 #if defined(_WIN32)
     PROCESS_MEMORY_COUNTERS pmc; // Get the counters that windows associates with the process
 

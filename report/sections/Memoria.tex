@@ -1,0 +1,34 @@
+\section{Misura utilizzata}
+Poiché Linux e Windows offrono statistiche diverse riguardanti la memoria allocata per un processo, è stato
+necessario utilizzare due metriche di memoria diverse:
+\begin{itemize}
+    \item \textbf{Linux}: Per Linux abbiamo utilizzato la misura \textbf{Resident Set Size} (RSS), la quale indica la memoria effettivamente occupata 
+    \item \textbf{Windows}:  
+\end{itemize}
+
+
+
+
+
+\section{Profiling della memoria}
+Per effettuare le misurazioni sullo spazio occupato in memoria dei due programmi sviluppati,
+è stato necessario scrivere due ulteriori programmi distinti, uno per Windows e uno per Linux, per il campionamento della memoria occupata da un
+determinato processo.
+Questa necessità nasce da problematiche legate sia a Matlab che a C++.
+Per quanto riguarda Matlab, la pressoché inesistente documentazione sul profiler integrato nell'ambiente di sviluppo \cite{mathworks_profiling}
+rende particolarmente arduo comprendere appieno la misurazione ottenuta. 
+Per C++, invece, non abbiamo trovato un profiler agnostico al sistema operativo che indicasse la quantità di memoria utilizzata per ogni chiamata
+ad una certa funzione (nel nostro caso, la funzione \texttt{calculate\_benchmark()}).
+Di seguito, riportiamo i due programmi scritti. I linguaggi utilizzati sono \textbf{Powershell} per Windows e \textbf{Bash} per Linux.
+
+\lstinputlisting[
+    language=Powershell,
+    style = PowerShell-editor,
+    caption = Sampler scritto per Windows in Powershell
+]{../profilers/mem_sampler.ps1}
+\clearpage
+\lstinputlisting[
+    language=Bash,
+    style = Bash-editor,
+    caption = Sampler scritto per Linux in Powershell
+]{../profilers/mem_sampler.sh}

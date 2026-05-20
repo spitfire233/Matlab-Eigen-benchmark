@@ -121,7 +121,7 @@ else () # We are using another compiler (MacOS, Windows not with MVSC or Linux)
         message(FATAL_ERROR "CHOLMOD not found")
     endif()
     # -O2: Optimization for speed
-    # -march=native Enables all instruction sets supported by the CPU
+    # -march=native Optimize for the current CPU
     # -DNDEBUG: Removes assertion macro to improve performance (oracles)
     # -fopenmp: link openMP to enable multithreading
     target_compile_options(${PROJECT_NAME} PRIVATE -O2 -march=native -DNDEBUG -fopenmp)

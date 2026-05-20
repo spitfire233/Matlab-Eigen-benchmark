@@ -579,3 +579,6 @@ profilers/mem_*.txt
 *.synctex.gz
 *.synctex.*
 *.toc
+
+.vs/
+.vscode/

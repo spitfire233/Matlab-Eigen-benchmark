@@ -38,7 +38,7 @@ xlabel('Matrix size (n)');
 ylabel('Solve time (results_linux_c)');
 title('MATLAB: Time vs size');
 grid on;
-saveas(f1, fullfile(mat_dir_linux, 'time_vs_size.png'));
+saveas(f1, fullfile(mat_dir_linux, 'time_vs_size.pdf'));
 
 % ---- Memory ----
 f2 = figure;
@@ -47,7 +47,7 @@ xlabel('Matrix size (n)');
 ylabel('Memory RSS (MB)');
 title('MATLAB: Memory vs size');
 grid on;
-saveas(f2, fullfile(mat_dir_linux, 'rss_vs_size.png'));
+saveas(f2, fullfile(mat_dir_linux, 'rss_vs_size.pdf'));
 
 % ---- Error ----
 f3 = figure;
@@ -56,7 +56,7 @@ xlabel('Matrix size (n)');
 ylabel('Relative error');
 title('MATLAB: Relative error vs size');
 grid on;
-saveas(f3, fullfile(mat_dir_linux, 'relative_error_vs_size.png'));
+saveas(f3, fullfile(mat_dir_linux, 'relative_error_vs_size.pdf'));
 
 %% =========================
 % LOAD C++ results_linux_c
@@ -74,7 +74,7 @@ xlabel('Matrix size (n)');
 ylabel('Solve time (results_linux_c)');
 title('C++: Time vs size');
 grid on;
-saveas(f4, fullfile(cpp_dir_linux, 'time_vs_size.png'));
+saveas(f4, fullfile(cpp_dir_linux, 'time_vs_size.pdf'));
 
 % ---- Memory ----
 f5 = figure;
@@ -83,7 +83,7 @@ xlabel('Matrix size (n)');
 ylabel('Memory RSS (MB)');
 title('C++: Memory vs size');
 grid on;
-saveas(f5, fullfile(cpp_dir_linux, 'rss_vs_size.png'));
+saveas(f5, fullfile(cpp_dir_linux, 'rss_vs_size.pdf'));
 
 % ---- Error ----
 f6 = figure;
@@ -92,7 +92,7 @@ xlabel('Matrix size (n)');
 ylabel('Relative error');
 title('C++: Relative error vs size');
 grid on;
-saveas(f6, fullfile(cpp_dir_linux, 'relative_error_vs_size.png'));
+saveas(f6, fullfile(cpp_dir_linux, 'relative_error_vs_size.pdf'));
 
 %% =========================
 % COMPARISON PLOTS
@@ -107,9 +107,9 @@ hold off
 xlabel('Matrix size (n)');
 ylabel('Solve time (results_linux_c)');
 title('Time comparison: MATLAB vs C++');
-legend('MATLAB', 'C++');
+legend('MATLAB', 'C++', "Location", "southeast");
 grid on;
-saveas(f7, fullfile(cmp_dir_linux, 'time_comparison.png'));
+saveas(f7, fullfile(cmp_dir_linux, 'time_comparison.pdf'));
 
 % ---- MEMORY COMPARISON ----
 f8 = figure;
@@ -120,9 +120,9 @@ hold off
 xlabel('Matrix size (n)');
 ylabel('Memory RSS (MB)');
 title('Memory comparison: MATLAB vs C++');
-legend('MATLAB', 'C++');
+legend('MATLAB', 'C++', "Location", "southeast");
 grid on;
-saveas(f8, fullfile(cmp_dir_linux, 'memory_comparison.png'));
+saveas(f8, fullfile(cmp_dir_linux, 'memory_comparison.pdf'));
 
 % ---- ERROR COMPARISON ----
 f9 = figure;
@@ -133,9 +133,9 @@ hold off
 xlabel('Matrix size (n)');
 ylabel('Relative error');
 title('Relative error comparison: MATLAB vs C++');
-legend('MATLAB', 'C++');
+legend('MATLAB', 'C++', "Location", "southeast");
 grid on;
-saveas(f9, fullfile(cmp_dir_linux, 'relative_error_comparison.png'));
+saveas(f9, fullfile(cmp_dir_linux, 'relative_error_comparison.pdf'));
 
 %% =========================
 % LOAD MATLAB results_windows_matlab
@@ -153,7 +153,7 @@ xlabel('Matrix size (n)');
 ylabel('Solve time (results_windows_c)');
 title('MATLAB: Time vs size');
 grid on;
-saveas(f10, fullfile(mat_dir_windows, 'time_vs_size.png'));
+saveas(f10, fullfile(mat_dir_windows, 'time_vs_size.pdf'));
 
 % ---- Memory ----
 f11 = figure;
@@ -162,7 +162,7 @@ xlabel('Matrix size (n)');
 ylabel('Memory RSS (MB)');
 title('MATLAB: Memory vs size');
 grid on;
-saveas(f11, fullfile(mat_dir_windows, 'rss_vs_size.png'));
+saveas(f11, fullfile(mat_dir_windows, 'rss_vs_size.pdf'));
 
 % ---- Error ----
 f12 = figure;
@@ -171,7 +171,7 @@ xlabel('Matrix size (n)');
 ylabel('Relative error');
 title('MATLAB: Relative error vs size');
 grid on;
-saveas(f12, fullfile(mat_dir_windows, 'relative_error_vs_size.png'));
+saveas(f12, fullfile(mat_dir_windows, 'relative_error_vs_size.pdf'));
 
 %% =========================
 % LOAD C++ results_windows_c
@@ -189,7 +189,7 @@ xlabel('Matrix size (n)');
 ylabel('Solve time (results_windows_c)');
 title('C++: Time vs size');
 grid on;
-saveas(13, fullfile(cpp_dir_windows, 'time_vs_size.png'));
+saveas(13, fullfile(cpp_dir_windows, 'time_vs_size.pdf'));
 
 % ---- Memory ----
 f14 = figure;
@@ -198,7 +198,7 @@ xlabel('Matrix size (n)');
 ylabel('Memory RSS (MB)');
 title('C++: Memory vs size');
 grid on;
-saveas(f14, fullfile(cpp_dir_windows, 'rss_vs_size.png'));
+saveas(f14, fullfile(cpp_dir_windows, 'rss_vs_size.pdf'));
 
 % ---- Error ----
 f15 = figure;
@@ -207,7 +207,7 @@ xlabel('Matrix size (n)');
 ylabel('Relative error');
 title('C++: Relative error vs size');
 grid on;
-saveas(f15, fullfile(cpp_dir_windows, 'relative_error_vs_size.png'));
+saveas(f15, fullfile(cpp_dir_windows, 'relative_error_vs_size.pdf'));
 
 %% =========================
 % COMPARISON PLOTS
@@ -222,9 +222,9 @@ hold off
 xlabel('Matrix size (n)');
 ylabel('Solve time (results_windows_c)');
 title('Time comparison: MATLAB vs C++');
-legend('MATLAB', 'C++');
+legend('MATLAB', 'C++', "Location", "southeast");
 grid on;
-saveas(f16, fullfile(cmp_dir_windows, 'time_comparison.png'));
+saveas(f16, fullfile(cmp_dir_windows, 'time_comparison.pdf'));
 
 % ---- MEMORY COMPARISON ----
 f17 = figure;
@@ -235,9 +235,9 @@ hold off
 xlabel('Matrix size (n)');
 ylabel('Memory RSS (MB)');
 title('Memory comparison: MATLAB vs C++');
-legend('MATLAB', 'C++');
+legend('MATLAB', 'C++', "Location", "southeast");
 grid on;
-saveas(f17, fullfile(cmp_dir_windows, 'memory_comparison.png'));
+saveas(f17, fullfile(cmp_dir_windows, 'memory_comparison.pdf'));
 
 % ---- ERROR COMPARISON ----
 f18 = figure;
@@ -248,9 +248,9 @@ hold off
 xlabel('Matrix size (n)');
 ylabel('Relative error');
 title('Relative error comparison: MATLAB vs C++');
-legend('MATLAB', 'C++');
+legend('MATLAB', 'C++', "Location", "southeast");
 grid on;
-saveas(f18, fullfile(cmp_dir_windows, 'relative_error_comparison.png'));
+saveas(f18, fullfile(cmp_dir_windows, 'relative_error_comparison.pdf'));
 
 
 %% =========================
@@ -269,9 +269,9 @@ hold off
 xlabel('Matrix size (n)');
 ylabel('Solve time ');
 title('Time comparison: Complete');
-legend('Windows:MATLAB', 'Windows:C++','Linux:MATLAB', 'Linux:C++');
+legend('Windows:MATLAB', 'Windows:C++','Linux:MATLAB', 'Linux:C++', "Location", "southeast");
 grid on;
-saveas(f16, fullfile(cmp_dir_complete, 'time_comparison.png'));
+saveas(f16, fullfile(cmp_dir_complete, 'time_comparison.pdf'));
 
 % ---- MEMORY COMPARISON ----
 f17 = figure;
@@ -287,9 +287,9 @@ hold off
 xlabel('Matrix size (n)');
 ylabel('Memory RSS (MB)');
 title('Memory comparison: Complete');
-legend('Windows:MATLAB', 'Windows:C++','Linux:MATLAB', 'Linux:C++');
+legend('Windows:MATLAB', 'Windows:C++','Linux:MATLAB', 'Linux:C++', "Location", "southeast");
 grid on;
-saveas(f17, fullfile(cmp_dir_complete, 'memory_comparison.png'));
+saveas(f17, fullfile(cmp_dir_complete, 'memory_comparison.pdf'));
 
 % ---- ERROR COMPARISON ----
 f18 = figure;
@@ -303,10 +303,10 @@ semilogy(results_linux_c.sizes, results_linux_c.relerr, '-s', 'LineWidth', 1.5);
 hold off
 xlabel('Matrix size (n)');
 ylabel('Relative error');
-title('Memory comparison: Complete');
-legend('Windows:MATLAB', 'Windows:C++','Linux:MATLAB', 'Linux:C++');
+title('Relative error comparison: Complete');
+legend('Windows:MATLAB', 'Windows:C++','Linux:MATLAB', 'Linux:C++', "Location", "southeast");
 grid on;
-saveas(f18, fullfile(cmp_dir_complete, 'relative_error_comparison.png'));
+saveas(f18, fullfile(cmp_dir_complete, 'relative_error_comparison.pdf'));
 
 %% =========================
 % DONE

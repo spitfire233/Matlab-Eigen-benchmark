@@ -18,7 +18,7 @@ int main(const int argc, char* argv[]) {
         }
 
         // Calculate the matrix benchmark results
-        benchmark_results results = calulate_benchmark(matrix_file, pid, mem_file);
+        benchmark_results results = calculate_benchmark(matrix_file, pid, mem_file);
 
         // Pause the thread in order to allow the profiler to finish writing
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
