@@ -1,15 +1,14 @@
 \section{Misura utilizzata}
+\label{mem_mesuring_method}
 Poiché Linux e Windows offrono statistiche diverse riguardanti la memoria allocata per un processo, è stato
 necessario utilizzare due metriche di memoria diverse:
 \begin{itemize}
-    \item \textbf{Linux}: Per Linux abbiamo utilizzato la misura \textbf{Resident Set Size} (RSS), la quale indica la memoria effettivamente occupata 
-    \item \textbf{Windows}:  
+    \item \textbf{Linux}: Per Linux abbiamo utilizzato la misura \textbf{Resident Set Size} (RSS), la quale indica la memoria effettivamente occupata dal processo in memoria RAM
+    \item \textbf{Windows}: Windows non permette di ottenere direttamente una misura uguale a RSS. La migliore stima disponibile è quindi la misura che prende il nome di \textbf{Working Set Size} (WSS),
+    la quale misura il numero di pagine (unità di misura della memoria virtuale) del processo presenti attualmente in RAM.
 \end{itemize}
-
-
-
-
-
+Tuttavia, entrambe queste misure non tengono conto della memoria portata su disco durante lo swapping, quindi esse risultano inaccurate nel momento in cui il sistema effettua swapping di parte
+della memoria del processo.
 \section{Profiling della memoria}
 Per effettuare le misurazioni sullo spazio occupato in memoria dei due programmi sviluppati,
 è stato necessario scrivere due ulteriori programmi distinti, uno per Windows e uno per Linux, per il campionamento della memoria occupata da un
@@ -20,7 +19,6 @@ rende particolarmente arduo comprendere appieno la misurazione ottenuta.
 Per C++, invece, non abbiamo trovato un profiler agnostico al sistema operativo che indicasse la quantità di memoria utilizzata per ogni chiamata
 ad una certa funzione (nel nostro caso, la funzione \texttt{calculate\_benchmark()}).
 Di seguito, riportiamo i due programmi scritti. I linguaggi utilizzati sono \textbf{Powershell} per Windows e \textbf{Bash} per Linux.
-
 \lstinputlisting[
     language=Powershell,
     style = PowerShell-editor,
@@ -32,3 +30,50 @@ Di seguito, riportiamo i due programmi scritti. I linguaggi utilizzati sono \tex
     style = Bash-editor,
     caption = Sampler scritto per Linux in Powershell
 ]{../profilers/mem_sampler.sh}
+\section{Analisi dei risultati}
+Le misurazioni ottenute per entrambi i programmi su Windows sono riportate in figura \ref{fig:windows_mem_comparison}
+\begin{figure}[hbt]
+    \centering
+    \includegraphics[
+        width=\textwidth,
+        trim= 0cm 9cm 0cm 9cm,
+        clip
+    ]{../plots/comparison/windows/memory_comparison.pdf}
+    \caption{Confronto della memoria utilizzata su Windows}
+    \label{fig:windows_mem_comparison}
+\end{figure}
+Si può notare dal grafico come la memoria utilizzata da C++ sia tendenzialmente più bassa rispetto alla memoria utilizzata dal programma Matlab.
+Tuttavia, per alcune matrici di dimensione minore, la memoria utilizzata da Matlab è inferiore rispetto a quella utilizzata dal programma C++. Ciò può essere
+dovuto alla compressione maggiore del formato di file utilizzato da Matlab (.mat) rispetto al formato utilizzato da C++ (.mtx), oltre alle ottimizzazioni effettuate
+dai rispettivi programmi. Inoltre, come già accennato nella sezione \ref{mem_mesuring_method}, le due misurazioni ottenute non tengono conto della memoria portata su disco in caso di swapping,
+quindi le misure ottenute per Matlab per alcune matrici di dimensioni maggiori (Flan-1565 e StocF-1465) non sono direttamente comparabili con quelle ottenute per C++ poiché inferiori all'effettiva memoria
+occupata dal processo (spazio in RAM $+$ memoria occupata con swap).
+Le misurazioni ottenute per entrambi i programmi su Linux sono invece riportate in figura \ref{fig:linux_mem_comparison}
+\begin{figure}[hbt]
+    \centering
+    \includegraphics[
+        width=\textwidth,
+        trim= 0cm 9cm 0cm 9cm,
+        clip
+    ]{../plots/comparison/linux/memory_comparison.pdf}
+    \caption{Confronto della memoria utilizzata su Linux}
+    \label{fig:linux_mem_comparison}
+\end{figure}
+A differenza di Windows, la memoria utilizzata da Matlab è tendenzialmente minore rispetto alla memoria usata da C++ per le matrici di ordine inferiore.
+Al crescere delle dimensioni della matrice, tuttavia, la memoria utilizzata da C++ risulta tendenzialmente minore rispetto a Matlab. Similmente a Windows,
+anche su Linux Matlab effettua swapping per alcune delle matrici più grandi (Flan-1565 e StocF-1465), quindi le misure ottenute non sono direttamente comparabili
+con quelle ottenute da C++ poiché minori rispetto all'effettiva memoria occupata dal processo. Infine, le misurazioni per entrambi i sistemi operativi sono riportate in figura \ref{fig:complete_mem_comparison}
+\begin{figure}[H]
+    \centering
+    \includegraphics[
+        width=\textwidth,
+        trim= 0cm 9cm 0cm 9cm,
+        clip
+    ]{../plots/comparison/complete/memory_comparison.pdf}
+    \caption{Confronto della memoria su entrambi i sistemi operativi}
+    \label{fig:complete_mem_comparison}
+\end{figure}
+\noindent
+Come si può evincere dal grafico, per le matrici di ordine minore, C++ occupa meno spazio in memoria su Windows rispetto che su Linux. Matlab, d'altro canto, per le matrici di ordine minore,
+occupa meno spazio in memoria su Linux rispetto che su Windows. Al crescere delle dimensioni della matrice, tuttavia, il programma scritto in C++ occupa tendenzialmente meno memoria rispetto al
+programma Matlab su entrambi i sistemi operativi, tenendo tuttavia conto che le misure per Matlab per alcune delle matrici più grosse, a causa dello swapping, sono inferiori rispetto alle effettive dimensioni occupate dal processo.

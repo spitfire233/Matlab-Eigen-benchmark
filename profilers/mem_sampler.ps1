@@ -6,12 +6,10 @@ param( # Line command params
 "mem_kb" | Out-File $outfile -Encoding ascii
 # Loop while the target process is still running
 while (Get-Process -Id $targetPid -ErrorAction SilentlyContinue) {
-    # Get the process object
-    $p = Get-Process -Id $targetPid
+    $p = Get-Process -Id $targetPid # Get the process object
     # WorkingSet64 is in bytes, convert to KB
     $memKB = [math]::Round($p.WorkingSet64 / 1KB)
     # Append the memory value to the output file
     "$memKB" | Out-File $outfile -Append -Encoding ascii
-    # Wait 10 milliseconds before next sample
-    Start-Sleep -Milliseconds 10
+    Start-Sleep -Milliseconds 10 # Wait 10 milliseconds before next sample
 }

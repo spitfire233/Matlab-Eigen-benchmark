@@ -44,7 +44,7 @@ saveas(f1, fullfile(mat_dir_linux, 'time_vs_size.pdf'));
 f2 = figure;
 semilogy(results_linux_matlab.n, results_linux_matlab.peak_MB, '-o', 'LineWidth', 1.5);
 xlabel('Matrix size (n)');
-ylabel('Memory RSS (MB)');
+ylabel('Memory (MB)');
 title('MATLAB: Memory vs size');
 grid on;
 saveas(f2, fullfile(mat_dir_linux, 'rss_vs_size.pdf'));
@@ -80,7 +80,7 @@ saveas(f4, fullfile(cpp_dir_linux, 'time_vs_size.pdf'));
 f5 = figure;
 semilogy(results_linux_c.sizes, results_linux_c.mem_rss, '-s', 'LineWidth', 1.5);
 xlabel('Matrix size (n)');
-ylabel('Memory RSS (MB)');
+ylabel('Memory (MB)');
 title('C++: Memory vs size');
 grid on;
 saveas(f5, fullfile(cpp_dir_linux, 'rss_vs_size.pdf'));
@@ -118,7 +118,7 @@ hold on
 semilogy(results_linux_c.sizes, results_linux_c.mem_rss, '-s', 'LineWidth', 1.5);
 hold off
 xlabel('Matrix size (n)');
-ylabel('Memory RSS (MB)');
+ylabel('Memory (MB)');
 title('Memory comparison: MATLAB vs C++');
 legend('MATLAB', 'C++', "Location", "southeast");
 grid on;
@@ -159,7 +159,7 @@ saveas(f10, fullfile(mat_dir_windows, 'time_vs_size.pdf'));
 f11 = figure;
 semilogy(results_windows_matlab.n, results_windows_matlab.peak_MB, '-o', 'LineWidth', 1.5);
 xlabel('Matrix size (n)');
-ylabel('Memory RSS (MB)');
+ylabel('Memory (MB)');
 title('MATLAB: Memory vs size');
 grid on;
 saveas(f11, fullfile(mat_dir_windows, 'rss_vs_size.pdf'));
@@ -195,7 +195,7 @@ saveas(13, fullfile(cpp_dir_windows, 'time_vs_size.pdf'));
 f14 = figure;
 semilogy(results_windows_c.sizes, results_windows_c.mem_rss, '-s', 'LineWidth', 1.5);
 xlabel('Matrix size (n)');
-ylabel('Memory RSS (MB)');
+ylabel('Memory (MB)');
 title('C++: Memory vs size');
 grid on;
 saveas(f14, fullfile(cpp_dir_windows, 'rss_vs_size.pdf'));
@@ -233,7 +233,7 @@ hold on
 semilogy(results_windows_c.sizes, results_windows_c.mem_rss, '-s', 'LineWidth', 1.5);
 hold off
 xlabel('Matrix size (n)');
-ylabel('Memory RSS (MB)');
+ylabel('Memory (MB)');
 title('Memory comparison: MATLAB vs C++');
 legend('MATLAB', 'C++', "Location", "southeast");
 grid on;
@@ -285,7 +285,7 @@ semilogy(results_linux_c.sizes, results_linux_c.mem_rss, '-s', 'LineWidth', 1.5)
 
 hold off
 xlabel('Matrix size (n)');
-ylabel('Memory RSS (MB)');
+ylabel('Memory (MB)');
 title('Memory comparison: Complete');
 legend('Windows:MATLAB', 'Windows:C++','Linux:MATLAB', 'Linux:C++', "Location", "southeast");
 grid on;
