@@ -25,8 +25,54 @@ rispettivi linguaggi:
     firstnumber=66,
     caption = Porzione del codice Matlab in cui si calcola il tempo di esecuzione
 ]{../matlab/main.m}
-\section{Risultati}
+\section{Analisi dei risultati}
+I risultati ottenuti da entrambi i programmi su Windows sono riportati in figura \ref{fig:windows_time_comparison}
+\begin{figure}[hbt]
+    \centering
+    \includegraphics[
+        width=\textwidth,
+        trim= 0cm 9cm 0cm 9cm,
+        clip
+    ]{../plots/comparison/windows/time_comparison.pdf}
+    \caption{Confronto dei tempi di esecuzione su Windows}
+    \label{fig:windows_time_comparison}
+\end{figure}
+\noindent
+Al crescere delle dimensioni della matrice, il programma C++
+ha dei tempi di calcolo minori rispetto al programma Matlab. Ciò è dato dal fatto che durante il calcolo
+del sistema di equazioni lineari, la computazione porta al fill in della matrice, aumentandone la dimensione in memoria, e quindi portando
+Matlab a effettuare swapping per alcune delle matrici più pesanti e aumentandone i tempi di calcolo. 
+Ciò non permette dunque di confrontare direttamente i tempi di calcolo di Matlab con C++ per le due matrici che effettuano swapping (Flan-1565 e StocF-1465),
+poiché la misurazione viene sporcata dal tempo necessario a riportare le parti di memoria del processo messe su disco in memoria principale.
+I risultati ottenuti da entrambi i programmi su Linux sono invece riportati in figura \ref{fig:linux_time_comparison}. Come si può notare, le stesse considerazioni
+effettuate per Windows valgono per Linux.
+\begin{figure}[hbt]
+    \centering
+    \includegraphics[
+        width=\textwidth,
+        trim= 0cm 9cm 0cm 9cm,
+        clip
+    ]{../plots/comparison/linux/time_comparison.pdf}
+    \caption{Confronto dei tempi di esecuzione su Windows}
+    \label{fig:linux_time_comparison}
+\end{figure}
+Infine, i risultati per entrambi i sistemi operativi sono riportati in figura \ref{fig:complete_time_comparison}.
+\begin{figure}[hbt]
+    \centering
+    \includegraphics[
+        width=\textwidth,
+        trim= 0cm 9cm 0cm 9cm,
+        clip
+    ]{../plots/comparison/complete/time_comparison.pdf}
+    \caption{Confronto dei tempi di esecuzione su Windows}
+    \label{fig:complete_time_comparison}
+\end{figure}
+Come si può evincere da quest'ultimo grafico, il programma Matlab ha performance migliori su Linux, mentre il programma C++ ha performance migliori su Windows; tuttavia, queste differenze 
+di performance sono marginali.
 
+
+
+\noindent
 
 
 

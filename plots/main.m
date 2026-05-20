@@ -35,7 +35,7 @@ if ~exist(cmp_dir_complete, 'dir'), mkdir(cmp_dir_complete); end
 f1 = figure;
 semilogy(results_linux_matlab.n, results_linux_matlab.time, '-o', 'LineWidth', 1.5);
 xlabel('Matrix size (n)');
-ylabel('Solve time (results_linux_c)');
+ylabel('Solve time (s)');
 title('MATLAB: Time vs size');
 grid on;
 saveas(f1, fullfile(mat_dir_linux, 'time_vs_size.pdf'));
@@ -71,7 +71,7 @@ results_linux_c = CSVToStruct('linux_results.csv');
 f4 = figure;
 semilogy(results_linux_c.sizes, results_linux_c.times, '-s', 'LineWidth', 1.5);
 xlabel('Matrix size (n)');
-ylabel('Solve time (results_linux_c)');
+ylabel('Solve time (s)');
 title('C++: Time vs size');
 grid on;
 saveas(f4, fullfile(cpp_dir_linux, 'time_vs_size.pdf'));
@@ -105,7 +105,7 @@ hold on
 plot(results_linux_c.sizes, results_linux_c.times, '-s', 'LineWidth', 1.5);
 hold off
 xlabel('Matrix size (n)');
-ylabel('Solve time (results_linux_c)');
+ylabel('Solve time (s)');
 title('Time comparison: MATLAB vs C++');
 legend('MATLAB', 'C++', "Location", "southeast");
 grid on;
@@ -150,7 +150,7 @@ results_windows_matlab = load('windows_results.mat');
 f10 = figure;
 semilogy(results_windows_matlab.n, results_windows_matlab.time, '-o', 'LineWidth', 1.5);
 xlabel('Matrix size (n)');
-ylabel('Solve time (results_windows_c)');
+ylabel('Solve time (s)');
 title('MATLAB: Time vs size');
 grid on;
 saveas(f10, fullfile(mat_dir_windows, 'time_vs_size.pdf'));
@@ -186,7 +186,7 @@ results_windows_c = CSVToStruct('windows_results.csv');
 f13 = figure;
 semilogy(results_windows_c.sizes, results_windows_c.times, '-s', 'LineWidth', 1.5);
 xlabel('Matrix size (n)');
-ylabel('Solve time (results_windows_c)');
+ylabel('Solve time (s)');
 title('C++: Time vs size');
 grid on;
 saveas(13, fullfile(cpp_dir_windows, 'time_vs_size.pdf'));
@@ -220,7 +220,7 @@ hold on
 plot(results_windows_c.sizes, results_windows_c.times, '-s', 'LineWidth', 1.5);
 hold off
 xlabel('Matrix size (n)');
-ylabel('Solve time (results_windows_c)');
+ylabel('Solve time (s)');
 title('Time comparison: MATLAB vs C++');
 legend('MATLAB', 'C++', "Location", "southeast");
 grid on;
@@ -267,7 +267,7 @@ hold on
 plot(results_linux_c.sizes, results_linux_c.times, '-s', 'LineWidth', 1.5);
 hold off
 xlabel('Matrix size (n)');
-ylabel('Solve time ');
+ylabel('Solve time (s)');
 title('Time comparison: Complete');
 legend('Windows:MATLAB', 'Windows:C++','Linux:MATLAB', 'Linux:C++', "Location", "southeast");
 grid on;
