@@ -1,0 +1,55 @@
+In conclusione, i benchmark eseguiti hanno mostrato come entrambi gli ambienti analizzati, Matlab e C++,
+siano in grado di risolvere sistemi lineari sparsi di grandi dimensioni tramite fattorizzazione di Cholesky.
+Tuttavia, i risultati ottenuti evidenziano differenze significative in termini di prestazioni e gestione delle risorse.
+
+Per quanto riguarda i tempi di esecuzione, il programma sviluppato in C++ ha mostrato performance generalmente migliori rispetto a Matlab, soprattutto all'aumentare delle dimensioni delle matrici.
+Questo comportamento sulle matrici di dimensioni maggiori è dovuto principalmente all'assenza di swapping sul programma C++, che riesce a mantenere un utilizzo della memoria più contenuto durante la fase di fattorizzazione e risoluzione del sistema lineare.
+Matlab, pur implementando internamente algoritmi altamente ottimizzati e sfruttando librerie numeriche avanzate, tende invece ad allocare quantità di memoria maggiori, causando operazioni di swapping per le matrici più pesanti e introducendo quindi un significativo overhead temporale.
+Se fosse stato utilizzato un sistema con più memoria RAM, è possibile che le differenze di tempo tra i due programmi sarebbero risultate meno marcate.
+
+Dal punto di vista dell'utilizzo della memoria, i risultati mostrano come il programma C++ occupi mediamente meno spazio rispetto a Matlab per le matrici di dimensioni più elevate.
+Le differenze osservate per matrici di ordine inferiore risultano invece influenzate sia dai diversi formati utilizzati per la rappresentazione delle matrici sia dalle differenti strategie di gestione della memoria adottate dai due ambienti.
+Inoltre, la presenza dello swapping rende difficile effettuare un confronto perfettamente accurato della memoria realmente utilizzata da Matlab nei casi più estremi.
+
+Per quanto riguarda la precisione numerica, le differenze osservate tra Matlab e C++ risultano marginali e dipendono principalmente dalle specifiche implementazioni dei solver e delle librerie utilizzate.
+In particolare, il solver basato su CHOLMOD integrato in Eigen ha mostrato, nella maggior parte dei casi, errori relativi leggermente inferiori rispetto a quelli ottenuti con Matlab.
+\section{Usabilità}
+Dal punto di vista dell'usabilità, Matlab offre un ambiente significativamente più immediato e semplice da utilizzare rispetto a C++.
+La presenza di funzionalità integrate per l'algebra lineare,
+gestione automatica della memoria e una sintassi ad alto livello permette infatti di sviluppare rapidamente programmi numerici complessi con una quantità ridotta di codice.
+Al contrario, lo sviluppo dell'applicazione in C++ ha richiesto una gestione esplicita delle dipendenze,
+la configurazione dell'ambiente di build e l'integrazione manuale di librerie esterne.
+
+In particolare, l'installazione e la configurazione dell'ambiente C++ su Windows si sono rivelate significativamente più complesse rispetto a Matlab.
+La necessità di compilare manualmente librerie come SuiteSparse e OpenBLAS con supporto al multithreading,
+configurare correttamente CMake e gestire le dipendenze tramite strumenti esterni ha reso il setup più articolato e soggetto a problematiche di compatibilità.
+Matlab, invece, mette a disposizione un ecosistema già integrato e pronto all'uso,
+nel quale la maggior parte delle funzionalità necessarie è immediatamente disponibile senza ulteriori configurazioni.
+\section{Documentazione}
+Per quanto riguarda la documentazione, entrambi gli ambienti risultano ben supportati, ma con differenze sostanziali nell'approccio.
+Matlab dispone di una documentazione centralizzata, uniforme e facilmente consultabile, particolarmente adatta ad un utilizzo didattico e introduttivo, tuttavia è limitata nei dettagli implementativi in quanto closed source.
+L'ambiente C++, invece, richiede la consultazione della documentazione di molteplici librerie distinte, spesso con livelli di dettaglio e qualità differenti.
+Tuttavia, librerie mature come Eigen, CHOLMOD mettono a disposizione documentazioni tecniche estremamente approfondite,
+che permettono un elevato livello di controllo e ottimizzazione dell'applicazione.
+
+\section{Confronto finale}
+Complessivamente, i risultati ottenuti evidenziano come un'implementazione sviluppata in C++,
+opportunamente ottimizzata e supportata da librerie numeriche specializzate come Eigen, SuiteSparse e OpenBLAS,
+possa offrire prestazioni superiori rispetto a Matlab sia in termini di tempo di esecuzione sia di utilizzo della memoria.
+Matlab rimane comunque uno strumento estremamente efficace per lo sviluppo rapido e per la prototipazione di algoritmi numerici,
+grazie alla semplicità d'uso, all'elevato livello di astrazione e alla disponibilità di strumenti integrati avanzati.
+
+Si può quindi concludere che Matlab rappresenti una soluzione più accessibile,
+semplice da configurare e particolarmente adatta alla prototipazione rapida,
+mentre C++ costituisce una scelta più complessa dal punto di vista implementativo,
+ma capace di offrire maggiore controllo sull'hardware
+e migliori prestazioni complessive nei casi di calcolo numerico intensivo.
+Nel caso ipotetico presentato nella traccia, se si ha a disposizione del personale esperto in C++,
+questo risulta la scelta migliore in particolare su piattaforma Linux,
+dove la gestione delle dipendenze è molto più semplice.
+Dove questo non è possibile, Matlab rappresenta comunque una valida alternativa,
+soprattutto se si dispone di un sistema con sufficiente memoria RAM per evitare problemi di swapping,
+tenendo presente tuttavia del costo elevato delle licenze.
+Per Matlab, l'installazione risulta molto più semplice e rapida su Windows,
+mentre su Linux è necessario utilizzare un gestore di pacchetti dedicato o seguire procedure più complesse per l'installazione.
+Inoltre, molte distribuzioni Linux non sono ufficialmente supportate da Matlab.
