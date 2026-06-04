@@ -34,7 +34,7 @@ $ sudo dnf install eigen3-devel, flexiblas, cmake
 Una volta installati tutti i software necessari, possiamo utilizzare i seguenti comandi, dalla cartella di root del progetto,
 per generare i file di compilazione e compilare il progetto:
 ```bash
-$ sudo cmake -DCMAKE_BUILD_TYPE=Releasem -S ./cpp/ -B ./out/
+$ sudo cmake -DCMAKE_BUILD_TYPE=Release -S ./cpp/ -B ./out/
 $ sudo cmake --build ./out/
 ```
 Infine, per eseguire il programma, possiamo eseguire i seguenti comandi:
