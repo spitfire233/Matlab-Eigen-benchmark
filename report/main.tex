@@ -8,9 +8,19 @@
 \usepackage{amsfonts}
 \usepackage[italian]{babel}
 \usepackage[a4paper,margin=2.5cm]{geometry}
-\usepackage[hidelinks]{hyperref}
+\usepackage[]{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    citecolor = blue,
+    urlcolor=blue,
+    pdftitle={Overleaf Example},
+    pdfpagemode=FullScreen,
+    }
+
 \usepackage[
-backend=biber,
+backend=bibtex,
 style=ieee,
 sorting=none,
 ]{biblatex}
